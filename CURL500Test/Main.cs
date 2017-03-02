@@ -14,12 +14,11 @@ namespace CURL500Test
 {
     public partial class Main : Form
     {
-        Login login;
-        CmdLineArgs testArgs;
-        Operator oper;
-        TestSet testSet;
         Fiber fiber = new Fiber();
-
+        CmdLineArgs testArgs;
+        TestSet testSet;
+        Operator oper;
+        Login login;
 
         ErrorProvider fiberIdErrorProvider = new ErrorProvider();
 
@@ -325,7 +324,6 @@ namespace CURL500Test
 
             int numRows = testListDataGrid.Rows.Count;
 
-            //columnIndex = dataGridView1.CurrentCell.ColumnIndex;
             foreach (DataGridViewRow row in testListDataGrid.Rows)
             {
                 row.DefaultCellStyle.BackColor = Color.Black;

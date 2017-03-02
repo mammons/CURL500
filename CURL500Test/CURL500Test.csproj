@@ -76,6 +76,10 @@
       <HintPath>..\packages\CircularProgressBar.2.3.0\lib\net35-client\CircularProgressBar.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="DevLib.IO, Version=2.16.21.33425, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DevLib.IO.2.16.21.33425\lib\net20\DevLib.IO.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="MRG.Controls.UI">
       <HintPath>..\..\LoadingCircle\MRG.Controls.UI\bin\Debug\MRG.Controls.UI.dll</HintPath>
     </Reference>
@@ -149,6 +153,7 @@
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
     <Compile Include="Operator.cs" />
+    <Compile Include="PECommunication.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PTSEventArgs.cs" />

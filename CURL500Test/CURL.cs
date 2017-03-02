@@ -19,16 +19,20 @@ namespace CURL500Test
         FileSystemWatcher watcher;
 
 
-        private string prodbeforeFile = AppDomain.CurrentDomain.BaseDirectory + "FiberData.ini";
-        private string prodafterFile = AppDomain.CurrentDomain.BaseDirectory + "ResultData.ini";
-        private string path = @"C:\CURL400\results";
-
         private const int numberOfRetries = 5;
         private const int delayOnRetry = 1000;
 
         private const double gaugeLengthInMeters = 0.01893;
 
         public bool manualEntry = false;
+
+        private string prodbeforeFile = AppDomain.CurrentDomain.BaseDirectory + "FiberData.ini";
+        private string prodafterFile = AppDomain.CurrentDomain.BaseDirectory + "ResultData.ini";
+        private string path = @"C:\CURL400\results";
+        private string portNumber = "COM1";
+
+
+
 
         public CURL(Fiber fiber, TestSet testSet)
         {
@@ -42,6 +46,7 @@ namespace CURL500Test
         {
             yesButton.Visible = false;
             noButton.Visible = false;
+            okButton.Visible = true;
             radiusEntryTextbox.Visible = false;
             radiusResultLabel.Visible = true;
             radiusResultLabel.Text = "Waiting...";
@@ -50,11 +55,13 @@ namespace CURL500Test
             statusResultLabel.Text = "Waiting...";
             statusResultLabel.BackColor = Form.DefaultBackColor;
             statusResultLabel.TextChanged += statusResultLabel_TextChanged;
-            WriteToLog(string.Format("-> Perform the Curl test in the PE application on {0}", fiber.fiberId.Trim()));
-            WriteToStatus("Waiting for curl test to complete");
-            watch();
+            WriteToLog(string.Format("-> Load {0} fiber sample", fiber.fiberId.Trim()));
+            WriteToStatus("Waiting for curl test to complete"); 
         }
 
+        /// <summary>
+        /// Not used for CURL500
+        /// </summary>
         private void watch()
         {
             watcher = new FileSystemWatcher();
@@ -255,8 +262,42 @@ namespace CURL500Test
 
         public void GetResultData()
         {
-            string value = manualEntry ? radiusEntryTextbox.Text : curlResult.radius.Split(' ')[0];
-            calculateOffsetForPTS(value);
+            curlResult = new CurlResult();
+            PECommunication port = new PECommunication(portNumber);
+            openPort(port);
+
+            string value = port.runCurl();
+            string processedValue = "";
+            ProcessPEReturn(value, out processedValue);
+            curlResult.radius = processedValue;
+            calculateOffsetForPTS(curlResult.radius);
+        }
+
+        private bool ProcessPEReturn(string inVal, out string outVal)
+        {
+            outVal = inVal.Substring(0, inVal.Length-1);
+
+            if (outVal.Contains("FAIL"))
+            {
+                outVal = "The test did not complete properly";
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool openPort(PECommunication port)
+        {
+            if (port.open())
+            {
+                WriteToLog("Port Open");
+                return true;
+            }
+            else
+            {
+                WriteToLog("Port failed to open");
+                return false;
+            }
         }
 
         private void ProcessPTSReturn(List<string> ptsReturn)
@@ -313,6 +354,11 @@ namespace CURL500Test
             RunTest();
         }
 
+        /// <summary>
+        /// Part of the watch() task and won't be used for the CURL500
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
             if (!FileIsReady(e.FullPath)) return;
@@ -323,7 +369,7 @@ namespace CURL500Test
         }
 
         /// <summary>
-        /// This method checks to see if the file that raised the changede event is ready to be accessed. If we get an io exception when trying to access the file, the method
+        /// This method checks to see if the file that raised the changed event is ready to be accessed. If we get an io exception when trying to access the file, the method
         /// returns false
         /// </summary>
         /// <param name="path"></param>
