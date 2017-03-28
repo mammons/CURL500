@@ -15,7 +15,7 @@ namespace CURL500Test
     {
         public Fiber fiber { get; set; }
         public TestSet testSet { get; set; }
-        CurlResults curlResult { get; set; }
+        //CurlResults curlResult { get; set; }
         FileSystemWatcher watcher;
 
 
@@ -74,7 +74,7 @@ namespace CURL500Test
 
         private void DisplayResults()
         {
-            if (curlResult.successful)
+            if (fiber.results.curlResults.successful)
             {
                 WriteToStatus("Success!");
             }
@@ -85,19 +85,19 @@ namespace CURL500Test
 
             if (this.InvokeRequired)
             {
-                radiusResultLabel.Invoke((MethodInvoker)(() => radiusResultLabel.Text = curlResult.radius));
+                radiusResultLabel.Invoke((MethodInvoker)(() => radiusResultLabel.Text = fiber.results.curlResults.radius));
             }
             else
             {
-                radiusResultLabel.Text = curlResult.radius;
+                radiusResultLabel.Text = fiber.results.curlResults.radius;
             }
             if (this.InvokeRequired)
             {
-                statusResultLabel.Invoke((MethodInvoker)(() => statusResultLabel.Text = curlResult.successful ? "Successful" : "Unsuccessful"));
+                statusResultLabel.Invoke((MethodInvoker)(() => statusResultLabel.Text = fiber.results.curlResults.successful ? "Successful" : "Unsuccessful"));
             }
             else
             {
-                statusResultLabel.Text = curlResult.successful ? "Successful" : "Unsuccessful";
+                statusResultLabel.Text = fiber.results.curlResults.successful ? "Successful" : "Unsuccessful";
             }
             //triggers the statuslabel updated event
         }
@@ -105,34 +105,34 @@ namespace CURL500Test
         private void ExtractResultFromTxtFile(string filePath)
         {
             WriteToStatus("Attempting to extract results...");
-            curlResult = new CurlResults();
+
             try
             {
                 foreach (string line in File.ReadLines(filePath))
                 {
                     if (line.Contains("Status"))
                     {
-                        curlResult.successful = line.Split(':')[1].Trim() == "Successful" ? true : false;
+                        fiber.results.curlResults.successful = line.Split(':')[1].Trim() == "Successful" ? true : false;
                     }
                     if (line.Contains("Radius"))
                     {
-                        curlResult.radius = line.Split(':')[1].Trim();
+                        fiber.results.curlResults.radius = line.Split(':')[1].Trim();
                     }
                     if (line.Contains("Delta"))
                     {
-                        curlResult.delta = line.Split(':')[1].Trim();
+                        fiber.results.curlResults.delta = line.Split(':')[1].Trim();
                     }
                     if (line.Contains("Amplitude"))
                     {
-                        curlResult.amplitude = line.Split(':')[1];
+                        fiber.results.curlResults.amplitude = line.Split(':')[1];
                     }
                     if (line.Contains("Offset"))
                     {
-                        curlResult.offset = line.Split(':')[1];
+                        fiber.results.curlResults.offset = line.Split(':')[1];
                     }
                     if (line.Contains("Phase"))
                     {
-                        curlResult.phase = line.Split(':')[1];
+                        fiber.results.curlResults.phase = line.Split(':')[1];
                     }
                 }
             }
@@ -240,7 +240,7 @@ namespace CURL500Test
 
         private bool EvaluateResultData()
         {
-            double resultValue = fiber.results.curlISEvalue;
+            double resultValue = fiber.results.curlResults.curlISEvalue;
             //check curl result against limits
             if (resultValue > -1)
             {
@@ -248,15 +248,15 @@ namespace CURL500Test
                     resultValue > testSet.limits.Pass
                     )
                 {
-                    fiber.results.curlISEresult = "F";
-                    fiber.results.curlISEtestcode = fiber.results.curlISEtestcode == "RM" ? "FF" : "RM";
+                    fiber.results.curlResults.curlISEresult = "F";
+                    fiber.results.curlResults.curlISEtestcode = fiber.results.curlResults.curlISEtestcode == "RM" ? "FF" : "RM";
                 }
                 else
                 {
-                    fiber.results.curlISEresult = "P";
-                    fiber.results.curlISEtestcode = "PP";
+                    fiber.results.curlResults.curlISEresult = "P";
+                    fiber.results.curlResults.curlISEtestcode = "PP";
                 }
-                fiber.results.lastTestResult = fiber.results.curlISEresult;
+                fiber.results.lastTestResult = fiber.results.curlResults.curlISEresult;
                 return true;
             }
             else
@@ -268,15 +268,14 @@ namespace CURL500Test
 
         public void GetResultData()
         {
-            curlResult = new CurlResults();
             PECommunication port = new PECommunication(portNumber);
             openPort(port);
 
             string value = port.runCurl();
             string processedValue = "";
             ProcessPEReturn(value, out processedValue);
-            curlResult.radius = processedValue;
-            calculateOffsetForPTS(curlResult.radius);
+            fiber.results.curlResults.radius = processedValue;
+            calculateOffsetForPTS(fiber.results.curlResults.radius);
         }
 
         private bool ProcessPEReturn(string inVal, out string outVal)
@@ -325,18 +324,18 @@ namespace CURL500Test
                 {
                     tempVal = convertedRadiusValue - Math.Sqrt(Math.Pow(convertedRadiusValue, 2) - Math.Pow(gaugeLengthInMeters, 2));
                 }
-                fiber.results.curlISEvalue = tempVal * Math.Pow(10, 6);
+                fiber.results.curlResults.curlISEvalue = tempVal * Math.Pow(10, 6);
             }
             else
             {
-                fiber.results.curlISEvalue = -1f;
+                fiber.results.curlResults.curlISEvalue = -1f;
             }
         }
 
         private void statusResultLabel_TextChanged(object sender, EventArgs e)
         {
-            statusResultLabel.BackColor = curlResult.successful ? Color.LawnGreen : Color.IndianRed;
-            if (curlResult.successful != true)
+            statusResultLabel.BackColor = fiber.results.curlResults.successful ? Color.LawnGreen : Color.IndianRed;
+            if (fiber.results.curlResults.successful != true)
             {
                 DialogResult remeas = MessageBox.Show("The PE set reported that the test was unsuccessful. Try cleaning the fiber and measuring again.", "Unsuccessful Test", MessageBoxButtons.OKCancel);
                 if (remeas == DialogResult.OK)

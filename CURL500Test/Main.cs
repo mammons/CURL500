@@ -85,7 +85,7 @@ namespace CURL500Test
             currentTest.Run();
             updateTestMapDisplay();
             updateOperatorDisplayAfterTest();
-            WriteToLog(string.Format("Test Result: {0} {1}", fiber.results.curlISEvalue, fiber.results.curlISEresult));
+            WriteToLog(string.Format("Test Result: {0} {1}", fiber.results.curlResults.curlISEvalue, fiber.results.curlResults.curlISEresult));
         }
 
         private void updateOperatorDisplayAfterTest()
@@ -103,9 +103,10 @@ namespace CURL500Test
                 displayText = "Failed";
                 msgtype = messageType.FAILED;
             }
-
+            string logMsg = string.Format("Test Result: Offset(PTS Value): {0} Radius: {1} Pass/Fail: {2}", fiber.results.curlISEvalue.ToString("000.0"), fiber.results.curlRadius, fiber.results.curlISEresult);
             WriteToOperator(string.Format("Fiber {0} {1}", fiber.fiberId, displayText), msgtype);
-            WriteToResultsBox(string.Format("Fiber {0} {1} {2} {3}", fiber.fiberId.Trim(), displayText, fiber.results.curlISEvalue, fiber.results.));
+            WriteToLog(logMsg);
+            WriteToResultsBox(logMsg);
         }
 
         private void PopulateGridView()
@@ -248,12 +249,12 @@ namespace CURL500Test
                     break;
             }
             operatorMessageBox.Text = v;
+            WriteToLog(v);
         }
         private void WriteToResultsBox(string str)
         {
             this.resultsTextBox.AppendText(str);
-            Log.permaLog(sessionInfo, (ObjectDumperExtensions.DumpToString(fiber.results, "Results")));
-            Log.permaLog(sessionInfo, string.Format(str));
+            Log.permaLog(sessionInfo, (ObjectDumperExtensions.DumpToString(fiber.results, "Detail Results")));
         }
 
         private void WriteToStatus(string str)
@@ -315,7 +316,7 @@ namespace CURL500Test
             //If PTS returns an error then set err to the error text
             if (fiber.testList.ptsReturn[6] != "0")
             {
-                WriteToStatus("Error retrieving test list");
+                WriteToStatus(string.Format("Error retrieving test list: {0}", fiber.testList.ptsReturn[(int)PTSField.ERROR_MESSAGE]));
                 err = fiber.testList.ptsReturn[8];
             }
             //If no error then convert the returned string to TestEntry objects
