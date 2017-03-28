@@ -31,6 +31,8 @@ namespace CURL500Test
 
         private void loginButton_Click(object sender, EventArgs e)
         {
+            oper.Id = username.Text.ToUpper();
+            oper.password = password.Text.ToUpper();
             List<string> PTSresponse;
             PTSresponse = pts.loginOperator(oper, testSet).ToList();
 
@@ -38,10 +40,15 @@ namespace CURL500Test
             if (PTSresponse[(int)PTSField.RESPONSE_STATUS] == "0")
             {
                 oper.loggedIn = true;
-                oper.name = PTSresponse[(int)PTSField.RESPONSE_STATUS + 2];
                 testSet.oper = oper;
+                this.Close();
             }
-            this.Close();
+            else
+            {
+                loginStatusLabel.Text = PTSresponse[(int)PTSField.RESPONSE_STATUS + 2];
+                password.SelectAll();
+            }
+            oper.name = PTSresponse[(int)PTSField.RESPONSE_STATUS + 2];
         }
 
         private void username_Validating(object sender, CancelEventArgs e)

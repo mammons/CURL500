@@ -206,9 +206,15 @@ namespace CURL500Test
                     if (fiber.CheckFiberNeedsRemeasure(testSet))
                     {
                         WriteToLog(string.Format("-> Remeasure fiber: {0}", fiber.fiberId), true);
+                        if (fiber.isReferenceFiber())
+                        {
+                            fiber.referenceTries++;
+                            if (fiber.referenceTries > 3) WriteToLog("The reference fiber is failing, contact engineering");
+                        }
                         BeginTest();
                         return;
                     }
+                    this.Close();
                 }
                 else
                 {

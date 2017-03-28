@@ -184,7 +184,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
-    <None Include="CURL400Test_TemporaryKey.pfx" />
     <None Include="FiberData.ini" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />

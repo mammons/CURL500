@@ -11,6 +11,8 @@ namespace CURL500Test
         public string serialId { get; set; }
         public string rwrId { get; set; }
         public string status { get; set; }
+        public string lastTest { get; set; }
+        public int referenceTries { get; set; }
         public TestList testList { get; set; }
         public Results results { get; set; }
 
@@ -18,6 +20,7 @@ namespace CURL500Test
         {
             testList = new TestList();
             results = new Results();
+            referenceTries = 0;
         }
 
         public void formatIdForPTS()
@@ -31,7 +34,11 @@ namespace CURL500Test
         public bool CheckIfTestRequired(TestSet set)
         {
             var test = testList.TestEntries.FirstOrDefault(o => o.Name == set.testName);
-            if (test != null)
+            if (isReferenceFiber())
+            {
+                return true;
+            }
+            else if (test != null)
             {
                 return test.boolRequired;
             }
@@ -43,9 +50,19 @@ namespace CURL500Test
             var test = testList.TestEntries.FirstOrDefault(o => o.Name == set.testName);
             if (test != null)
             {
-                return test.Required == "R";
+                return test.Required == "R" && test.Result == "RM";
             }
             return false;
+        }
+
+        public bool isReferenceFiber()
+        {
+            return testList.ptsReturn[9] == "REFR";
+        }
+
+        public string getLastResult(string lastTest)
+        {
+            return results.lastTestResult;
         }
     }
 }

@@ -14,12 +14,14 @@ namespace CURL500Test
 {
     public partial class Main : Form
     {
-        Fiber fiber = new Fiber();
-        CmdLineArgs testArgs;
-        TestSet testSet;
-        Operator oper;
         Login login;
+        CmdLineArgs testArgs;
+        Operator oper;
+        TestSet testSet;
+        Fiber fiber = new Fiber();
 
+        string version = "1.0.0";
+        string sessionInfo = "No Session Info";
         ErrorProvider fiberIdErrorProvider = new ErrorProvider();
 
         public Main()
@@ -37,7 +39,8 @@ namespace CURL500Test
         {
             oper.loggedIn = false;
             updateTextBar();
-            WriteToLog(string.Format("Operator {0} has logged off", oper.name));
+            WriteToOperator(string.Format("Operator {0} has logged off", oper.name), messageType.NORMAL);
+            WriteToStatus(string.Format("{0} logged off", oper.name));
             showLogin();
         }
 
@@ -82,7 +85,7 @@ namespace CURL500Test
             currentTest.Run();
             updateTestMapDisplay();
             updateOperatorDisplayAfterTest();
-            WriteToLog("Test Result: {0}");
+            WriteToLog(string.Format("Test Result: {0} {1}", fiber.results.curlISEvalue, fiber.results.curlISEresult));
         }
 
         private void updateOperatorDisplayAfterTest()
@@ -102,7 +105,7 @@ namespace CURL500Test
             }
 
             WriteToOperator(string.Format("Fiber {0} {1}", fiber.fiberId, displayText), msgtype);
-            WriteToResultsBox(ObjectDumperExtensions.DumpToString(fiber.results, "Results"));
+            WriteToResultsBox(string.Format("Fiber {0} {1} {2}", fiber.fiberId, displayText, fiber.results.curlISEvalue));
         }
 
         private void PopulateGridView()
@@ -159,7 +162,7 @@ namespace CURL500Test
         {
             if (oper.loggedIn)
             {
-                this.Text = string.Format("Operator: {0} | Workstation: {1} | TestSet: {2} | TestSet Number: {3} | Server: {4}", oper.name, testSet.workstation, testSet.name, testSet.number, testArgs.server);
+                this.Text = sessionInfo = string.Format("Operator: {0} | Version: {5} | Workstation: {1} | TestSet: {2} | TestSet Number: {3} | Server: {4}", oper.name, testSet.workstation, testSet.name, testSet.number, testArgs.server, version);
             }
             else
             {
@@ -180,6 +183,11 @@ namespace CURL500Test
                 WriteToOperator(string.Format("Welcome, {0}", oper.name), messageType.NORMAL);
                 WriteToStatus(string.Format("Operator {0} logged in", oper.name));
             }
+            else
+            {
+                WriteToOperator(oper.name, messageType.URGENT); //oper.name will contain the error message from PTS
+                return;
+            }
         }
 
         private void InitializeTestSet()
@@ -198,12 +206,14 @@ namespace CURL500Test
             else
             {
                 testSet = new TestSet(testArgs.testSetName, testArgs.workstation, testArgs.testSetNumber);
+                updateTextBar();
             }
         }
 
         public void WriteToLog(string str)
         {
             this.mainLogTextBox.AppendText(str + "\r\n");
+            Log.permaLog(sessionInfo, str);
         }
 
         public void WriteToLog(List<string> strs)
@@ -238,11 +248,12 @@ namespace CURL500Test
                     break;
             }
             operatorMessageBox.Text = v;
-
         }
         private void WriteToResultsBox(string str)
         {
-            this.resultsTextBox.AppendText(string.Format("Results for {0} \r\n{1}", fiber.fiberId, str));
+            this.resultsTextBox.AppendText(str);
+            Log.permaLog(sessionInfo, (ObjectDumperExtensions.DumpToString(fiber.results, "Results")));
+            Log.permaLog(sessionInfo, string.Format("Results for {0} \r\n{1}", fiber.fiberId, str));
         }
 
         private void WriteToStatus(string str)
@@ -316,9 +327,8 @@ namespace CURL500Test
             }
         }
 
-        private void updateTestMapDisplay()
+        public void updateTestMapDisplay()
         {
-            ///MRA 2/19/2016 Added to try and highlight tests that need to be performed in the test list
 
             testListLabel.Text = string.Format("Test List for: {0}", fiber.fiberId);
 
@@ -381,16 +391,16 @@ namespace CURL500Test
             switch (fiberIdTextBox.Text.ToUpper())
             {
                 case "AA":
-                    fiberIdTextBox.Text = "068SF0701G2CLJ";
-                    serialIdTextBox.Text = "5204736588";
+                    fiberIdTextBox.Text = "024VM9822B2CLG";
+                    serialIdTextBox.Text = "4108542806";
                     break;
                 case "BB":
-                    fiberIdTextBox.Text = "015VU8303B2CLG";
-                    serialIdTextBox.Text = "5204736588";
+                    fiberIdTextBox.Text = "001V24069C2CLD";
+                    serialIdTextBox.Text = "0105698362";
                     break;
                 case "CC":
-                    fiberIdTextBox.Text = "001SF1009A1CLJ";
-                    serialIdTextBox.Text = "5204736588";
+                    fiberIdTextBox.Text = "008VV0452B2CLG";
+                    serialIdTextBox.Text = "5203881944";
                     break;
                 case "DD":
                     fiberIdTextBox.Text = "001VV0061A1CLJ";
