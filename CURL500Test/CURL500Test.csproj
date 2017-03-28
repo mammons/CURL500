@@ -140,6 +140,7 @@
     </Compile>
     <Compile Include="Fiber.cs" />
     <Compile Include="IniFileHelper.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
     </Compile>

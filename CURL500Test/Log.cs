@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CURL400Test
+namespace CURL500Test
 {
     class Log
     {
-        public static string localPath  = "C:\\CURL400\\Logs\\" + DateTime.Now.ToString("yyyyMMdd") + "--Log.txt";
-        public static string networkPath = @"\\nordevengr01\userapps\apps\CURL400\Logs\" + DateTime.Now.ToString("yyyyMMdd") + "--Log.txt";
+        public static string localPath  = "C:\\CURL500\\Logs\\" + DateTime.Now.ToString("yyyyMMdd") + "--Log.txt";
+        public static string networkPath = @"\\nordevengr01\userapps\apps\CURL500\Logs\" + DateTime.Now.ToString("yyyyMMdd") + "--Log.txt";
 
         public static void permaLog(string sessionInfo, string text)
         {

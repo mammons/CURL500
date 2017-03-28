@@ -31,7 +31,8 @@ namespace CURL500Test
                 default:
                     break;
             }
-
+            //After the test run update this field so we can pull the last test result
+            fiber.lastTest = testSet.testName;
         }
     }
 }
