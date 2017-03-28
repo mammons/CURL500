@@ -138,6 +138,7 @@
     <Compile Include="CURL.designer.cs">
       <DependentUpon>CURL.cs</DependentUpon>
     </Compile>
+    <Compile Include="CurlResults.cs" />
     <Compile Include="Fiber.cs" />
     <Compile Include="IniFileHelper.cs" />
     <Compile Include="Log.cs" />

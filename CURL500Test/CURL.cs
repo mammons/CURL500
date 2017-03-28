@@ -15,7 +15,7 @@ namespace CURL500Test
     {
         public Fiber fiber { get; set; }
         public TestSet testSet { get; set; }
-        CurlResult curlResult { get; set; }
+        CurlResults curlResult { get; set; }
         FileSystemWatcher watcher;
 
 
@@ -105,7 +105,7 @@ namespace CURL500Test
         private void ExtractResultFromTxtFile(string filePath)
         {
             WriteToStatus("Attempting to extract results...");
-            curlResult = new CurlResult();
+            curlResult = new CurlResults();
             try
             {
                 foreach (string line in File.ReadLines(filePath))
@@ -268,7 +268,7 @@ namespace CURL500Test
 
         public void GetResultData()
         {
-            curlResult = new CurlResult();
+            curlResult = new CurlResults();
             PECommunication port = new PECommunication(portNumber);
             openPort(port);
 
@@ -418,15 +418,5 @@ namespace CURL500Test
         {
             RunTest();
         }
-    }
-
-    public class CurlResult
-    {
-        public bool successful { get; set; }
-        public string radius { get; set; }
-        public string delta { get; set; }
-        public string amplitude { get; set; }
-        public string offset { get; set; }
-        public string phase { get; set; }
     }
 }

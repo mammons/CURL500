@@ -105,7 +105,7 @@ namespace CURL500Test
             }
 
             WriteToOperator(string.Format("Fiber {0} {1}", fiber.fiberId, displayText), msgtype);
-            WriteToResultsBox(string.Format("Fiber {0} {1} {2}", fiber.fiberId, displayText, fiber.results.curlISEvalue));
+            WriteToResultsBox(string.Format("Fiber {0} {1} {2} {3}", fiber.fiberId.Trim(), displayText, fiber.results.curlISEvalue, fiber.results.));
         }
 
         private void PopulateGridView()
@@ -253,7 +253,7 @@ namespace CURL500Test
         {
             this.resultsTextBox.AppendText(str);
             Log.permaLog(sessionInfo, (ObjectDumperExtensions.DumpToString(fiber.results, "Results")));
-            Log.permaLog(sessionInfo, string.Format("Results for {0} \r\n{1}", fiber.fiberId, str));
+            Log.permaLog(sessionInfo, string.Format(str));
         }
 
         private void WriteToStatus(string str)

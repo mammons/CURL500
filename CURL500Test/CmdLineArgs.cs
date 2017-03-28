@@ -46,9 +46,9 @@ namespace CURL500Test
             //{
             //TODO get this working with clickonce commandline arguments
             this.server = "DEV";// args[1].Trim();
-            this.workstation = "2S";// args[2].Trim();
+            this.workstation = "1S";// args[2].Trim();
             this.testSetName = "LTCURL";// args[3].Trim();
-            this.testSetNumber = "2S";// args[4].Trim();
+            this.testSetNumber = "01";// args[4].Trim();
             this.serialPortNumber = '1';// Convert.ToInt16(args[5].Trim());
             //}
 

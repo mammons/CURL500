@@ -41,6 +41,7 @@
             // 
             // username
             // 
+            this.username.CausesValidation = false;
             this.username.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.username.Location = new System.Drawing.Point(152, 43);
             this.username.Name = "username";
@@ -51,6 +52,7 @@
             // 
             // password
             // 
+            this.password.CausesValidation = false;
             this.password.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.password.Location = new System.Drawing.Point(152, 98);
             this.password.Name = "password";
@@ -90,6 +92,7 @@
             this.loginButton.Text = "Login";
             this.loginButton.UseVisualStyleBackColor = true;
             this.loginButton.Click += new System.EventHandler(this.loginButton_Click);
+            this.loginButton.Validating += new System.ComponentModel.CancelEventHandler(this.username_Validating);
             // 
             // quitButton
             // 

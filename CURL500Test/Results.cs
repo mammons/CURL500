@@ -34,6 +34,6 @@ namespace CURL500Test
             }
         }
         public string curlISEtestcode { get; set; }
-
+        public string curlISEradius { get; set; }
     }
 }
