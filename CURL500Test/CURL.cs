@@ -85,11 +85,11 @@ namespace CURL500Test
 
             if (this.InvokeRequired)
             {
-                radiusResultLabel.Invoke((MethodInvoker)(() => radiusResultLabel.Text = fiber.results.curlResults.radius));
+                radiusResultLabel.Invoke((MethodInvoker)(() => radiusResultLabel.Text = fiber.results.curlResults.ISEradius));
             }
             else
             {
-                radiusResultLabel.Text = fiber.results.curlResults.radius;
+                radiusResultLabel.Text = fiber.results.curlResults.ISEradius;
             }
             if (this.InvokeRequired)
             {
@@ -116,7 +116,7 @@ namespace CURL500Test
                     }
                     if (line.Contains("Radius"))
                     {
-                        fiber.results.curlResults.radius = line.Split(':')[1].Trim();
+                        fiber.results.curlResults.ISEradius = line.Split(':')[1].Trim();
                     }
                     if (line.Contains("Delta"))
                     {
@@ -240,7 +240,7 @@ namespace CURL500Test
 
         private bool EvaluateResultData()
         {
-            double resultValue = fiber.results.curlResults.curlISEvalue;
+            double resultValue = fiber.results.curlResults.ISEvalue;
             //check curl result against limits
             if (resultValue > -1)
             {
@@ -248,15 +248,15 @@ namespace CURL500Test
                     resultValue > testSet.limits.Pass
                     )
                 {
-                    fiber.results.curlResults.curlISEresult = "F";
-                    fiber.results.curlResults.curlISEtestcode = fiber.results.curlResults.curlISEtestcode == "RM" ? "FF" : "RM";
+                    fiber.results.curlResults.ISEresult = "F";
+                    fiber.results.curlResults.ISEtestcode = fiber.results.curlResults.ISEtestcode == "RM" ? "FF" : "RM";
                 }
                 else
                 {
-                    fiber.results.curlResults.curlISEresult = "P";
-                    fiber.results.curlResults.curlISEtestcode = "PP";
+                    fiber.results.curlResults.ISEresult = "P";
+                    fiber.results.curlResults.ISEtestcode = "PP";
                 }
-                fiber.results.lastTestResult = fiber.results.curlResults.curlISEresult;
+                fiber.results.lastTestResult = fiber.results.curlResults.ISEresult;
                 return true;
             }
             else
@@ -270,12 +270,13 @@ namespace CURL500Test
         {
             PECommunication port = new PECommunication(portNumber);
             openPort(port);
-
+            WriteToLog("Starting curl test...");
             string value = port.runCurl();
             string processedValue = "";
             ProcessPEReturn(value, out processedValue);
-            fiber.results.curlResults.radius = processedValue;
-            calculateOffsetForPTS(fiber.results.curlResults.radius);
+            fiber.results.curlResults.ISEradius = processedValue;
+            WriteToLog(string.Format("Test complete with radius: {0}m", processedValue));
+            calculateOffsetForPTS(fiber.results.curlResults.ISEradius);
         }
 
         private bool ProcessPEReturn(string inVal, out string outVal)
@@ -324,11 +325,11 @@ namespace CURL500Test
                 {
                     tempVal = convertedRadiusValue - Math.Sqrt(Math.Pow(convertedRadiusValue, 2) - Math.Pow(gaugeLengthInMeters, 2));
                 }
-                fiber.results.curlResults.curlISEvalue = tempVal * Math.Pow(10, 6);
+                fiber.results.curlResults.ISEvalue = tempVal * Math.Pow(10, 6);
             }
             else
             {
-                fiber.results.curlResults.curlISEvalue = -1f;
+                fiber.results.curlResults.ISEvalue = -1f;
             }
         }
 

@@ -5,9 +5,9 @@ namespace CURL500Test
 {
     class Log
     {
-        public static string localFolderName = @"C:\CURL500\Logs" + Properties.Settings.Default.Server;
+        public static string localFolderName = @"C:\CURL500\Logs\" + Properties.Settings.Default.Server;
         public static string localPath  = Path.Combine(localFolderName, DateTime.Now.ToString("yyyyMMdd") + "--Log.txt");
-        public static string networkPath = @"\\nordevengr01\userapps\apps\CURL500\Logs\" + Properties.Settings.Default.Server;
+        public static string networkFolderName = @"\\nordevengr01\userapps\apps\CURL500\Logs\" + Properties.Settings.Default.Server;
         public static string networkPath = Path.Combine(networkFolderName, DateTime.Now.ToString("yyyyMMdd") + "--Log.txt");
 
         public static void permaLog(string sessionInfo, string text)
@@ -20,6 +20,7 @@ namespace CURL500Test
 
             try
             {
+                Directory.CreateDirectory(networkFolderName);
                 File.AppendAllText(networkPath, sessionInfoWithTime + " " + text + Environment.NewLine);
             }
             catch(Exception)

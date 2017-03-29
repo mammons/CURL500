@@ -70,12 +70,12 @@ namespace CURL500Test
                 tset.number,//2
                 tset.oper.Id,//3
                 fiber.fiberId,//4
-                fiber.results.curlResults.curlOSEvalue.ToString("0000.00"),//5
-                fiber.results.curlResults.curlOSEresult,//6
-                fiber.results.curlResults.curlOSEtestcode,//7
-                fiber.results.curlResults.curlISEvalue.ToString("0000.00"),//8
-                fiber.results.curlResults.curlISEresult,//9
-                fiber.results.curlResults.curlISEtestcode,//10
+                fiber.results.curlResults.OSEvalue.ToString("0000.00"),//5
+                fiber.results.curlResults.OSEresult,//6
+                fiber.results.curlResults.OSEtestcode,//7
+                fiber.results.curlResults.ISEvalue.ToString("0000.00"),//8
+                fiber.results.curlResults.ISEresult,//9
+                fiber.results.curlResults.ISEtestcode,//10
                 fiber.testList.markNumber);//11
 
             SendReceive(sendMessage, out response);

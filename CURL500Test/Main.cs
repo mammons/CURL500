@@ -85,7 +85,6 @@ namespace CURL500Test
             currentTest.Run();
             updateTestMapDisplay();
             updateOperatorDisplayAfterTest();
-            WriteToLog(string.Format("Test Result: {0} {1}", fiber.results.curlResults.curlISEvalue, fiber.results.curlResults.curlISEresult));
         }
 
         private void updateOperatorDisplayAfterTest()
@@ -103,8 +102,8 @@ namespace CURL500Test
                 displayText = "Failed";
                 msgtype = messageType.FAILED;
             }
-            string logMsg = string.Format("Test Result: Offset(PTS Value): {0} Radius: {1} Pass/Fail: {2}", fiber.results.curlISEvalue.ToString("000.0"), fiber.results.curlRadius, fiber.results.curlISEresult);
-            WriteToOperator(string.Format("Fiber {0} {1}", fiber.fiberId, displayText), msgtype);
+            string logMsg = string.Format("Test Result: Offset(PTS Value):{0}um Radius:{1}m Pass/Fail: {2}", fiber.results.curlResults.ISEvalue.ToString("000.0"), fiber.results.curlResults.ISEradius, fiber.results.curlResults.ISEresult);
+            WriteToOperator(string.Format("Fiber {0}{1}", fiber.fiberId, displayText), msgtype);
             WriteToLog(logMsg);
             WriteToResultsBox(logMsg);
         }
@@ -292,7 +291,9 @@ namespace CURL500Test
             //Create a new TestSetLimit object to put the limits in. Adding the testset to the constructor will link the testset with the limits
             testSet.limits = new TestSetLimits(testSet, limits);
             //Display test limits maybe somewhere hidden for technician
-            WriteToLog(new List<string> {"<------- Test Limits ------->", "Pass Limit: " + testSet.limits.Pass.ToString(),
+            WriteToLog(new List<string> {
+                "<------- Test Limits ------->",
+                "Pass Limit: " + testSet.limits.Pass.ToString(),
                 "Fail Limit: " + testSet.limits.Fail.ToString(),
                 "RM Min: " + testSet.limits.RemeasureMin.ToString(),
                 "RM Max: " + testSet.limits.RemeasureMax.ToString(),
@@ -314,10 +315,10 @@ namespace CURL500Test
             fiber.testList.ptsReturn = pts.getTestList(fiber, testSet).ToList();
 
             //If PTS returns an error then set err to the error text
-            if (fiber.testList.ptsReturn[6] != "0")
+            if (fiber.testList.ptsReturn[(int)PTSField.RESPONSE_STATUS] != "0")
             {
-                WriteToStatus(string.Format("Error retrieving test list: {0}", fiber.testList.ptsReturn[(int)PTSField.ERROR_MESSAGE]));
-                err = fiber.testList.ptsReturn[8];
+                err = fiber.testList.ptsReturn[(int)PTSField.ERROR_MESSAGE];
+                WriteToStatus(string.Format("Error retrieving test list: {0}", err));
             }
             //If no error then convert the returned string to TestEntry objects
             else

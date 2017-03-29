@@ -121,7 +121,7 @@ namespace CURL500Test
 
         private void quitButton_Click(object sender, EventArgs e)
         {
-            Application.Exit();
+            Environment.Exit(0);
         }
 
         public void OnPTSMessageSending(object source, EventArgs args)
