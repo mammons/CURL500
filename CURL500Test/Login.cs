@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace CURL500Test
 {
@@ -29,26 +30,38 @@ namespace CURL500Test
             ShowDialog();
         }
 
-        private void loginButton_Click(object sender, EventArgs e)
+        private async void loginButton_Click(object sender, EventArgs e)
         {
             oper.Id = username.Text.ToUpper();
             oper.password = password.Text.ToUpper();
-            List<string> PTSresponse;
-            PTSresponse = pts.loginOperator(oper, testSet).ToList();
+            
 
-            //PTS RETURN: 31:EGG400:12:158:RE:OP:0:JCB158:BROWN JERRY C:
-            if (PTSresponse[(int)PTSField.RESPONSE_STATUS] == "0")
+            try
             {
-                oper.loggedIn = true;
-                testSet.oper = oper;
-                this.Close();
+                loadingCircle.LoadingCircleControl.Active = true;
+                loginButton.Enabled = false;
+                var response = await pts.loginOperatorAsync(oper, testSet);
+                var PTSresponse = response.ToList();
+
+                loadingCircle.LoadingCircleControl.Active = false;
+                if (PTSresponse[(int)PTSField.RESPONSE_STATUS] == "0")
+                {
+                    oper.loggedIn = true;
+                    testSet.oper = oper;
+                    this.Close();
+                }
+                else
+                {
+                    loginButton.Enabled = true;
+                    loginStatusLabel.Text = PTSresponse[(int)PTSField.RESPONSE_STATUS + 2];
+                    password.SelectAll();
+                }
+                oper.name = PTSresponse[(int)PTSField.RESPONSE_STATUS + 2];
             }
-            else
+            catch(Exception ex)
             {
-                loginStatusLabel.Text = PTSresponse[(int)PTSField.RESPONSE_STATUS + 2];
-                password.SelectAll();
+                Log.permaLog(testSet.sessionInfo, ex.Message);
             }
-            oper.name = PTSresponse[(int)PTSField.RESPONSE_STATUS + 2];
         }
 
         private void username_Validating(object sender, CancelEventArgs e)

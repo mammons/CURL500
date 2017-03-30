@@ -36,7 +36,7 @@
             this.statusResultLabel = new System.Windows.Forms.Label();
             this.noButton = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.loadingCircleToolStripMenuItem1 = new MRG.Controls.UI.LoadingCircleToolStripMenuItem();
+            this.loadingCircle = new MRG.Controls.UI.LoadingCircleToolStripMenuItem();
             this.curlStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.radiusEntryTextbox = new System.Windows.Forms.TextBox();
             this.okButton = new System.Windows.Forms.Button();
@@ -125,7 +125,7 @@
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.loadingCircleToolStripMenuItem1,
+            this.loadingCircle,
             this.curlStatusLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 421);
             this.statusStrip1.Name = "statusStrip1";
@@ -133,28 +133,28 @@
             this.statusStrip1.TabIndex = 9;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // loadingCircleToolStripMenuItem1
+            // loadingCircle
             // 
             // 
-            // loadingCircleToolStripMenuItem1
+            // loadingCircle
             // 
-            this.loadingCircleToolStripMenuItem1.LoadingCircleControl.AccessibleName = "loadingCircleToolStripMenuItem1";
-            this.loadingCircleToolStripMenuItem1.LoadingCircleControl.Active = false;
-            this.loadingCircleToolStripMenuItem1.LoadingCircleControl.Color = System.Drawing.Color.DarkGray;
-            this.loadingCircleToolStripMenuItem1.LoadingCircleControl.InnerCircleRadius = 5;
-            this.loadingCircleToolStripMenuItem1.LoadingCircleControl.Location = new System.Drawing.Point(1, 2);
-            this.loadingCircleToolStripMenuItem1.LoadingCircleControl.Name = "loadingCircleToolStripMenuItem1";
-            this.loadingCircleToolStripMenuItem1.LoadingCircleControl.NumberSpoke = 12;
-            this.loadingCircleToolStripMenuItem1.LoadingCircleControl.OuterCircleRadius = 11;
-            this.loadingCircleToolStripMenuItem1.LoadingCircleControl.RotationSpeed = 100;
-            this.loadingCircleToolStripMenuItem1.LoadingCircleControl.Size = new System.Drawing.Size(26, 20);
-            this.loadingCircleToolStripMenuItem1.LoadingCircleControl.SpokeThickness = 2;
-            this.loadingCircleToolStripMenuItem1.LoadingCircleControl.StylePreset = MRG.Controls.UI.LoadingCircle.StylePresets.MacOSX;
-            this.loadingCircleToolStripMenuItem1.LoadingCircleControl.TabIndex = 1;
-            this.loadingCircleToolStripMenuItem1.LoadingCircleControl.Text = "loadingCircleToolStripMenuItem1";
-            this.loadingCircleToolStripMenuItem1.Name = "loadingCircleToolStripMenuItem1";
-            this.loadingCircleToolStripMenuItem1.Size = new System.Drawing.Size(26, 20);
-            this.loadingCircleToolStripMenuItem1.Text = "loadingCircleToolStripMenuItem1";
+            this.loadingCircle.LoadingCircleControl.AccessibleName = "loadingCircle";
+            this.loadingCircle.LoadingCircleControl.Active = false;
+            this.loadingCircle.LoadingCircleControl.Color = System.Drawing.Color.DarkGray;
+            this.loadingCircle.LoadingCircleControl.InnerCircleRadius = 5;
+            this.loadingCircle.LoadingCircleControl.Location = new System.Drawing.Point(1, 2);
+            this.loadingCircle.LoadingCircleControl.Name = "loadingCircleToolStripMenuItem1";
+            this.loadingCircle.LoadingCircleControl.NumberSpoke = 12;
+            this.loadingCircle.LoadingCircleControl.OuterCircleRadius = 11;
+            this.loadingCircle.LoadingCircleControl.RotationSpeed = 100;
+            this.loadingCircle.LoadingCircleControl.Size = new System.Drawing.Size(26, 20);
+            this.loadingCircle.LoadingCircleControl.SpokeThickness = 2;
+            this.loadingCircle.LoadingCircleControl.StylePreset = MRG.Controls.UI.LoadingCircle.StylePresets.MacOSX;
+            this.loadingCircle.LoadingCircleControl.TabIndex = 1;
+            this.loadingCircle.LoadingCircleControl.Text = "loadingCircleToolStripMenuItem1";
+            this.loadingCircle.Name = "loadingCircle";
+            this.loadingCircle.Size = new System.Drawing.Size(26, 20);
+            this.loadingCircle.Text = "loadingCircleToolStripMenuItem1";
             // 
             // curlStatusLabel
             // 
@@ -218,7 +218,7 @@
         private System.Windows.Forms.Button noButton;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel curlStatusLabel;
-        private MRG.Controls.UI.LoadingCircleToolStripMenuItem loadingCircleToolStripMenuItem1;
+        private MRG.Controls.UI.LoadingCircleToolStripMenuItem loadingCircle;
         private System.Windows.Forms.TextBox radiusEntryTextbox;
         private System.Windows.Forms.Button okButton;
     }

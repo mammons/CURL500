@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CURL500Test
@@ -195,12 +196,16 @@ namespace CURL500Test
             curlStatusLabel.Text = str;
         }
 
-        private void RunTest()
+        private async Task RunTest()
         {
-            GetResultData();
+            loadingCircle.LoadingCircleControl.Active = true;
+            await GetResultData();
+            loadingCircle.LoadingCircleControl.Active = false;
             if (EvaluateResultData())
             {
-                SendCurlResultToPTS();
+                loadingCircle.LoadingCircleControl.Active = true;
+                await SendCurlResultToPTS();
+                loadingCircle.LoadingCircleControl.Active = false;
                 if (fiber.CheckIfTestRequired(testSet))
                 {
                     if (fiber.CheckFiberNeedsRemeasure(testSet))
@@ -228,68 +233,78 @@ namespace CURL500Test
             }
         }
 
-        private void SendCurlResultToPTS()
+        private async Task SendCurlResultToPTS()
         {
-            List<string> newPTSReturn = new List<string>();
+            //List<string> newPTSReturn = new List<string>();
             PTStransaction pts = new PTStransaction();
             pts.PTSMessageSending += OnPTSMessageSending;
-            newPTSReturn = pts.sendCurlResult(fiber, testSet).ToList();
-            WriteToStatus("Results Sent!");
-            ProcessPTSReturn(newPTSReturn);
+
+            try
+            {
+                loadingCircle.LoadingCircleControl.Active = true;
+                var newPTSReturn = await pts.sendCurlResultAsync(fiber, testSet);
+                WriteToStatus("Results Sent!");
+                ProcessPTSReturn(newPTSReturn.ToList());
+            }
+            catch(Exception ex)
+            {
+                Log.permaLog(testSet.sessionInfo, "Exception sending curl results to PTS: " + ex);
+            }
+            
         }
 
         private bool EvaluateResultData()
         {
             double resultValue = fiber.results.curlResults.ISEvalue;
             //check curl result against limits
-            if (resultValue > -1)
-            {
-                if (resultValue < testSet.limits.Fail ||
-                    resultValue > testSet.limits.Pass
-                    )
-                {
-                    fiber.results.curlResults.ISEresult = "F";
-                    fiber.results.curlResults.ISEtestcode = fiber.results.curlResults.ISEtestcode == "RM" ? "FF" : "RM";
-                }
-                else
-                {
-                    fiber.results.curlResults.ISEresult = "P";
-                    fiber.results.curlResults.ISEtestcode = "PP";
-                }
-                fiber.results.lastTestResult = fiber.results.curlResults.ISEresult;
-                return true;
-            }
-            else
-            {
-                WriteToLog("-> There was a problem with your entry. Please try the test again");
-                return false;
-            }
+
+
+                    if (resultValue > -1)
+                    {
+                        if (resultValue < testSet.limits.Fail ||
+                            resultValue > testSet.limits.Pass
+                            )
+                        {
+                            fiber.results.curlResults.ISEresult = "F";
+                            fiber.results.curlResults.ISEtestcode = fiber.results.curlResults.ISEtestcode == "RM" ? "FF" : "RM";
+                        }
+                        else
+                        {
+                            fiber.results.curlResults.ISEresult = "P";
+                            fiber.results.curlResults.ISEtestcode = "PP";
+                        }
+                        fiber.results.lastTestResult = fiber.results.curlResults.ISEresult;
+                        return true;
+                    }
+                    else
+                    {
+                        WriteToLog("-> There was a problem with your entry. Please try the test again");
+                        return false;
+                    }
         }
 
-        public void GetResultData()
+        public async Task GetResultData()
         {
             PECommunication port = new PECommunication(portNumber);
             openPort(port);
             WriteToLog("Starting curl test...");
-            string value = port.runCurl();
-            string processedValue = "";
-            ProcessPEReturn(value, out processedValue);
+            var value = await port.runCurl();
+            string processedValue = ProcessPEReturn(value);
             fiber.results.curlResults.ISEradius = processedValue;
             WriteToLog(string.Format("Test complete with radius: {0}m", processedValue));
             calculateOffsetForPTS(fiber.results.curlResults.ISEradius);
         }
 
-        private bool ProcessPEReturn(string inVal, out string outVal)
+        private string ProcessPEReturn(string inVal)
         {
-            outVal = inVal.Substring(0, inVal.Length-1);
+            string outVal = inVal.Substring(0, inVal.Length-1);
 
             if (outVal.Contains("FAIL"))
             {
                 outVal = "The test did not complete properly";
-                return false;
             }
 
-            return true;
+            return outVal;
         }
 
         private bool openPort(PECommunication port)
@@ -354,10 +369,10 @@ namespace CURL500Test
             noButton.Visible = true;
         }
 
-        private void yesButton_Click(object sender, EventArgs e)
+        private async void yesButton_Click(object sender, EventArgs e)
         {
             //yesButton.Enabled = false;
-            RunTest();
+            await RunTest();
         }
 
         /// <summary>
@@ -414,9 +429,10 @@ namespace CURL500Test
             WriteToLog("Enter radius result manually from PE application", true);
         }
 
-        private void okButton_Click(object sender, EventArgs e)
+        private async void okButton_Click(object sender, EventArgs e)
         {
-            RunTest();
+            okButton.Visible = false;
+            await RunTest();
         }
     }
 }

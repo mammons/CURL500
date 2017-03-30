@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Deployment.Application;
 using ObjectDumper;
+using System.Threading.Tasks;
 
 namespace CURL500Test
 {
@@ -21,7 +22,7 @@ namespace CURL500Test
         Fiber fiber = new Fiber();
 
         string version = "1.0.0";
-        string sessionInfo = "No Session Info";
+
         ErrorProvider fiberIdErrorProvider = new ErrorProvider();
 
         public Main()
@@ -49,42 +50,48 @@ namespace CURL500Test
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void submitButton_Click(object sender, EventArgs e)
+        private async void submitButton_Click(object sender, EventArgs e)
         {
-            string err;
+            
             AssignIdsToFiber();
             //Get the test list
-            GetTestList(out err);
-            if (string.IsNullOrWhiteSpace(err))
+            try
             {
-                //Get the limits for the test
-                GetTestLimits();
-                //Populate the display with the test list
-                PopulateGridView();
-                //If the test for the current set is required, begin the test
-                if (fiber.CheckIfTestRequired(testSet))
+                var err = await GetTestListAsync();
+                if (string.IsNullOrWhiteSpace(err))
                 {
-                    WriteToOperator(string.Format("Running {0} test for {1}", testSet.testName, fiber.fiberId), messageType.NORMAL);
-                    PerformTest();
+                    //Get the limits for the test
+                    await GetTestLimitsAsync();
+                    //Populate the display with the test list
+                    PopulateGridView();
+                    //If the test for the current set is required, begin the test
+                    if (fiber.CheckIfTestRequired(testSet))
+                    {
+                        WriteToOperator(string.Format("Running {0} test for {1}", testSet.testName, fiber.fiberId), messageType.NORMAL);
+                        PerformTest();
+                    }
+                    else
+                    {
+                        WriteToOperator(string.Format("{0} test not required for {1}", testSet.testName, fiber.fiberId), messageType.NORMAL);
+                    }
                 }
                 else
                 {
-                    WriteToOperator(string.Format("{0} test not required for {1}", testSet.testName, fiber.fiberId), messageType.NORMAL);
+                    WriteToOperator(err, messageType.URGENT);
                 }
             }
-            else
+            catch(Exception ex)
             {
-                WriteToOperator(err, messageType.URGENT);
-            }
-
+                WriteToLog("Exception in Main.submit : " + ex.Message);
+            }        
         }
 
         private void PerformTest()
         {
             Test currentTest = new Test(fiber, testSet);
             currentTest.Run();
-            updateTestMapDisplay();
             updateOperatorDisplayAfterTest();
+            updateTestMapDisplay();
         }
 
         private void updateOperatorDisplayAfterTest()
@@ -92,6 +99,7 @@ namespace CURL500Test
             string result = fiber.results.lastTestResult;
             string displayText = "did not complete testing";
             messageType msgtype = messageType.INCOMPLETE;
+
             if (result == "P")
             {
                 displayText = "Passed";
@@ -162,7 +170,7 @@ namespace CURL500Test
         {
             if (oper.loggedIn)
             {
-                this.Text = sessionInfo = string.Format("Operator: {0} | Version: {5} | Workstation: {1} | TestSet: {2} | TestSet Number: {3} | Server: {4}", oper.name, testSet.workstation, testSet.name, testSet.number, testArgs.server, version);
+                this.Text = testSet.sessionInfo = string.Format("Operator: {0} | Version: {5} | Workstation: {1} | TestSet: {2} | TestSet Number: {3} | Server: {4}", oper.name, testSet.workstation, testSet.name, testSet.number, testArgs.server, version);
             }
             else
             {
@@ -213,7 +221,7 @@ namespace CURL500Test
         public void WriteToLog(string str)
         {
             this.mainLogTextBox.AppendText(str + "\r\n");
-            Log.permaLog(sessionInfo, str);
+            Log.permaLog(testSet.sessionInfo, str);
         }
 
         public void WriteToLog(List<string> strs)
@@ -253,7 +261,7 @@ namespace CURL500Test
         private void WriteToResultsBox(string str)
         {
             this.resultsTextBox.AppendText(str);
-            Log.permaLog(sessionInfo, (ObjectDumperExtensions.DumpToString(fiber.results, "Detail Results")));
+            Log.permaLog(testSet.sessionInfo, (ObjectDumperExtensions.DumpToString(fiber.results, "Detail Results")));
         }
 
         private void WriteToStatus(string str)
@@ -275,9 +283,9 @@ namespace CURL500Test
             }
         }
 
-        private void GetTestLimits()
+        private async Task GetTestLimitsAsync()
         {
-            List<string> limits = new List<string>();
+            //List<string> limits = new List<string>();
 
             //Update log
             WriteToLog(string.Format("Getting test limits for test set {0}", testSet.name));
@@ -286,12 +294,16 @@ namespace CURL500Test
             PTStransaction pts = new PTStransaction();
             pts.PTSMessageSending += OnPTSMessageSending;
             pts.PTSMessageReceived += OnPTSMessageReceived;
-            limits = pts.getTestLimits(fiber, testSet).ToList();
 
-            //Create a new TestSetLimit object to put the limits in. Adding the testset to the constructor will link the testset with the limits
-            testSet.limits = new TestSetLimits(testSet, limits);
-            //Display test limits maybe somewhere hidden for technician
-            WriteToLog(new List<string> {
+            try
+            {
+                loadingCircle.LoadingCircleControl.Active = true;
+                var response = await pts.getTestLimitsAsync(fiber, testSet);
+                var limits = response.ToList();
+                //Create a new TestSetLimit object to put the limits in. Adding the testset to the constructor will link the testset with the limits
+                testSet.limits = new TestSetLimits(testSet, limits);
+                //Display test limits maybe somewhere hidden for technician
+                WriteToLog(new List<string> {
                 "<------- Test Limits ------->",
                 "Pass Limit: " + testSet.limits.Pass.ToString(),
                 "Fail Limit: " + testSet.limits.Fail.ToString(),
@@ -299,12 +311,17 @@ namespace CURL500Test
                 "RM Max: " + testSet.limits.RemeasureMax.ToString(),
                 "<---------------->"
                     });
+                loadingCircle.LoadingCircleControl.Active = false;
+            }
+            catch (Exception ex)
+            {
+                WriteToLog(ex.Message);
+            }        
         }
 
-        private void GetTestList(out string err)
+        private async Task<string> GetTestListAsync()
         {
-            err = "";
-
+            string err = "";
             //Update log
             WriteToLog(string.Format("Getting test list for {0}", fiber.fiberId));
 
@@ -312,21 +329,39 @@ namespace CURL500Test
             PTStransaction pts = new PTStransaction();
             pts.PTSMessageSending += OnPTSMessageSending;
             pts.PTSMessageReceived += OnPTSMessageReceived;
-            fiber.testList.ptsReturn = pts.getTestList(fiber, testSet).ToList();
 
-            //If PTS returns an error then set err to the error text
-            if (fiber.testList.ptsReturn[(int)PTSField.RESPONSE_STATUS] != "0")
+            
+            try
             {
-                err = fiber.testList.ptsReturn[(int)PTSField.ERROR_MESSAGE];
-                WriteToStatus(string.Format("Error retrieving test list: {0}", err));
-            }
-            //If no error then convert the returned string to TestEntry objects
-            else
-            {
-                WriteToStatus("Test list received");
-                fiber.testList.convertReturnToTestEntries();
+                loadingCircle.LoadingCircleControl.Active = true;
+                submitButton.Enabled = false;
 
+                var testListString = await pts.getTestListAsync(fiber, testSet);
+                fiber.testList.ptsReturn = testListString.ToList();
+
+                //If PTS returns an error then set err to the error text
+                if (fiber.testList.ptsReturn[(int)PTSField.RESPONSE_STATUS] != "0")
+                {
+                    err = fiber.testList.ptsReturn[(int)PTSField.ERROR_MESSAGE];
+                    WriteToStatus(string.Format("Error retrieving test list: {0}", err));
+                    return err;
+                }
+
+                //If no error then convert the returned string to TestEntry objects
+                else
+                {
+                    WriteToStatus("Test list received");
+                    fiber.testList.convertReturnToTestEntries();                    
+                }
+                loadingCircle.LoadingCircleControl.Active = false;
+                submitButton.Enabled = true;
+                return err;
             }
+            catch(Exception ex)
+            {
+                WriteToLog("Exception getting testlist: " + ex.Message);
+            }
+            return err;
         }
 
         public void updateTestMapDisplay()

@@ -5,6 +5,7 @@ using System.Text;
 using System.IO.Ports;
 using DevLib.IO;
 using DevLib.IO.Ports;
+using System.Threading.Tasks;
 
 namespace CURL500Test
 {
@@ -67,10 +68,9 @@ namespace CURL500Test
             return "Port not open";
         }
 
-        public string runCurl()
+        public async Task<string> runCurl()
         {
-            string testSetReturn;
-            testSetReturn = sendCommand("MEASURE");
+            var testSetReturn = await TaskEx.Run(() => sendCommand("MEASURE"));
 
             if (testSetReturn.Contains("OK"))
             {
