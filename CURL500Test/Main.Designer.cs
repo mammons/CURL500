@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.fiberIdTextBox = new System.Windows.Forms.TextBox();
             this.serialIdTextBox = new System.Windows.Forms.TextBox();
             this.testListDataGrid = new System.Windows.Forms.DataGridView();
@@ -50,12 +50,26 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.loadingCircle = new MRG.Controls.UI.LoadingCircleToolStripMenuItem();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.menu = new System.Windows.Forms.ToolStripMenuItem();
+            this.COMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.COM1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.COM2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.COM3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.COM4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.COM5ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.COM6ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.COM7ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.COM8ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.COM9ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testCOM = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.testListDataGrid)).BeginInit();
             this.tabControl.SuspendLayout();
             this.msgTab.SuspendLayout();
             this.logTab.SuspendLayout();
             this.resultsBox.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // fiberIdTextBox
@@ -84,33 +98,33 @@
             this.testListDataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.testListDataGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.testListDataGrid.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.testListDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.testListDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.testListDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.testListDataGrid.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.testListDataGrid.DefaultCellStyle = dataGridViewCellStyle8;
             this.testListDataGrid.Location = new System.Drawing.Point(401, 42);
             this.testListDataGrid.Name = "testListDataGrid";
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.testListDataGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.testListDataGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             this.testListDataGrid.Size = new System.Drawing.Size(263, 570);
             this.testListDataGrid.TabIndex = 2;
             // 
@@ -170,7 +184,7 @@
             // logoffButton
             // 
             this.logoffButton.CausesValidation = false;
-            this.logoffButton.Location = new System.Drawing.Point(12, 9);
+            this.logoffButton.Location = new System.Drawing.Point(12, 27);
             this.logoffButton.Name = "logoffButton";
             this.logoffButton.Size = new System.Drawing.Size(75, 23);
             this.logoffButton.TabIndex = 8;
@@ -286,6 +300,103 @@
             this.statusLabel.Size = new System.Drawing.Size(39, 17);
             this.statusLabel.Text = "Ready";
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menu});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(676, 24);
+            this.menuStrip1.TabIndex = 12;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // menu
+            // 
+            this.menu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.COMToolStripMenuItem,
+            this.testCOM});
+            this.menu.Name = "menu";
+            this.menu.Size = new System.Drawing.Size(50, 20);
+            this.menu.Text = "Menu";
+            // 
+            // COMToolStripMenuItem
+            // 
+            this.COMToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.COM1ToolStripMenuItem,
+            this.COM2ToolStripMenuItem,
+            this.COM3ToolStripMenuItem,
+            this.COM4ToolStripMenuItem,
+            this.COM5ToolStripMenuItem,
+            this.COM6ToolStripMenuItem,
+            this.COM7ToolStripMenuItem,
+            this.COM8ToolStripMenuItem,
+            this.COM9ToolStripMenuItem});
+            this.COMToolStripMenuItem.Name = "COMToolStripMenuItem";
+            this.COMToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.COMToolStripMenuItem.Text = "COM";
+            this.COMToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.COMToolStripMenuItem_DropDownItemClicked);
+            // 
+            // COM1ToolStripMenuItem
+            // 
+            this.COM1ToolStripMenuItem.Name = "COM1ToolStripMenuItem";
+            this.COM1ToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.COM1ToolStripMenuItem.Text = "COM1";
+            // 
+            // COM2ToolStripMenuItem
+            // 
+            this.COM2ToolStripMenuItem.Name = "COM2ToolStripMenuItem";
+            this.COM2ToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.COM2ToolStripMenuItem.Text = "COM2";
+            // 
+            // COM3ToolStripMenuItem
+            // 
+            this.COM3ToolStripMenuItem.Name = "COM3ToolStripMenuItem";
+            this.COM3ToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.COM3ToolStripMenuItem.Text = "COM3";
+            // 
+            // COM4ToolStripMenuItem
+            // 
+            this.COM4ToolStripMenuItem.Name = "COM4ToolStripMenuItem";
+            this.COM4ToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.COM4ToolStripMenuItem.Text = "COM4";
+            // 
+            // COM5ToolStripMenuItem
+            // 
+            this.COM5ToolStripMenuItem.Name = "COM5ToolStripMenuItem";
+            this.COM5ToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.COM5ToolStripMenuItem.Text = "COM5";
+            // 
+            // COM6ToolStripMenuItem
+            // 
+            this.COM6ToolStripMenuItem.Name = "COM6ToolStripMenuItem";
+            this.COM6ToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.COM6ToolStripMenuItem.Text = "COM6";
+            // 
+            // COM7ToolStripMenuItem
+            // 
+            this.COM7ToolStripMenuItem.Name = "COM7ToolStripMenuItem";
+            this.COM7ToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.COM7ToolStripMenuItem.Text = "COM7";
+            // 
+            // COM8ToolStripMenuItem
+            // 
+            this.COM8ToolStripMenuItem.Name = "COM8ToolStripMenuItem";
+            this.COM8ToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.COM8ToolStripMenuItem.Text = "COM8";
+            // 
+            // COM9ToolStripMenuItem
+            // 
+            this.COM9ToolStripMenuItem.Name = "COM9ToolStripMenuItem";
+            this.COM9ToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
+            this.COM9ToolStripMenuItem.Text = "COM9";
+            // 
+            // testCOM
+            // 
+            this.testCOM.Name = "testCOM";
+            this.testCOM.Size = new System.Drawing.Size(152, 22);
+            this.testCOM.Text = "Test COM Port";
+            this.testCOM.Click += new System.EventHandler(this.testCOM_Click);
+            // 
             // Main
             // 
             this.AcceptButton = this.submitButton;
@@ -293,6 +404,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(676, 624);
             this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.logoffButton);
             this.Controls.Add(this.submitButton);
@@ -302,6 +414,7 @@
             this.Controls.Add(this.testListDataGrid);
             this.Controls.Add(this.serialIdTextBox);
             this.Controls.Add(this.fiberIdTextBox);
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Main";
             this.Text = "CURL400 Test";
             this.Load += new System.EventHandler(this.Main_Load);
@@ -315,6 +428,8 @@
             this.resultsBox.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -341,6 +456,19 @@
         private System.Windows.Forms.StatusStrip statusStrip1;
         private MRG.Controls.UI.LoadingCircleToolStripMenuItem loadingCircle;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem menu;
+        private System.Windows.Forms.ToolStripMenuItem COMToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem COM1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem COM2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem COM3ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem COM4ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem COM5ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem COM6ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem COM7ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem COM8ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem COM9ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem testCOM;
     }
 }
 

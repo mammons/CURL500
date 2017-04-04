@@ -451,5 +451,14 @@ namespace CURL500Test
                     break;
             }
         }
+        private void testCOM_Click(object sender, EventArgs e)
+        {
+            new CommTest(testSet.portNumber).ShowDialog();
+        }
+
+        private void COMToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            testSet.portNumber = e.ClickedItem.Text;
+        }
     }
 }
