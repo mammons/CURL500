@@ -344,6 +344,7 @@ namespace CURL500Test
                 {
                     err = fiber.testList.ptsReturn[(int)PTSField.ERROR_MESSAGE];
                     WriteToStatus(string.Format("Error retrieving test list: {0}", err));
+                    submitButton.Enabled = true;
                     return err;
                 }
 
