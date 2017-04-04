@@ -145,6 +145,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CmdLineArgs.cs" />
+    <Compile Include="CommTest.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CommTest.Designer.cs">
+      <DependentUpon>CommTest.cs</DependentUpon>
+    </Compile>
     <Compile Include="CURL.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -179,6 +185,9 @@
     <Compile Include="TestList.cs" />
     <Compile Include="TestSet.cs" />
     <Compile Include="TestSetLimits.cs" />
+    <EmbeddedResource Include="CommTest.resx">
+      <DependentUpon>CommTest.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CURL.resx">
       <DependentUpon>CURL.cs</DependentUpon>
     </EmbeddedResource>
