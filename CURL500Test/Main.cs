@@ -303,30 +303,37 @@ namespace CURL500Test
 
         private void GetTestList(out string err)
         {
-            err = "";
-
-            //Update log
-            WriteToLog(string.Format("Getting test list for {0}", fiber.fiberId));
-
-            //Create a PTS transaction to retrieve the test list
-            PTStransaction pts = new PTStransaction();
-            pts.PTSMessageSending += OnPTSMessageSending;
-            pts.PTSMessageReceived += OnPTSMessageReceived;
-            fiber.testList.ptsReturn = pts.getTestList(fiber, testSet).ToList();
-
-            //If PTS returns an error then set err to the error text
-            if (fiber.testList.ptsReturn[(int)PTSField.RESPONSE_STATUS] != "0")
+            try
             {
-                err = fiber.testList.ptsReturn[(int)PTSField.ERROR_MESSAGE];
-                WriteToStatus(string.Format("Error retrieving test list: {0}", err));
-            }
-            //If no error then convert the returned string to TestEntry objects
-            else
-            {
-                WriteToStatus("Test list received");
-                fiber.testList.convertReturnToTestEntries();
+                err = "";
 
+                //Update log
+                WriteToLog(string.Format("Getting test list for {0}", fiber.fiberId));
+
+                //Create a PTS transaction to retrieve the test list
+                PTStransaction pts = new PTStransaction();
+                pts.PTSMessageSending += OnPTSMessageSending;
+                pts.PTSMessageReceived += OnPTSMessageReceived;
+                fiber.testList.ptsReturn = pts.getTestList(fiber, testSet).ToList();
+
+                //If PTS returns an error then set err to the error text
+                if (fiber.testList.ptsReturn[(int)PTSField.RESPONSE_STATUS] != "0")
+                {
+                    err = fiber.testList.ptsReturn[(int)PTSField.ERROR_MESSAGE];
+                    WriteToStatus(string.Format("Error retrieving test list: {0}", err));
+                }
+                //If no error then convert the returned string to TestEntry objects
+                else
+                {
+                    WriteToStatus("Test list received");
+                    fiber.testList.convertReturnToTestEntries();
+                }
+            }catch(Exception ex)
+            {
+                err = ex.ToString();
+                MessageBox.Show(err);
             }
+  
         }
 
         public void updateTestMapDisplay()
@@ -416,6 +423,16 @@ namespace CURL500Test
                     fiberIdTextBox.Text = fiberIdTextBox.Text.ToUpper();
                     break;
             }
+        }
+
+        private void testCOM_Click(object sender, EventArgs e)
+        {
+            new CommTest(testSet.portNumber).ShowDialog();
+        }
+
+        private void COMToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            testSet.portNumber = e.ClickedItem.Text;
         }
     }
 }

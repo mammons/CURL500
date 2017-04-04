@@ -49,7 +49,7 @@ namespace CURL500Test
             this.workstation = "1S";// args[2].Trim();
             this.testSetName = "LTCURL";// args[3].Trim();
             this.testSetNumber = "01";// args[4].Trim();
-            this.serialPortNumber = '1';// Convert.ToInt16(args[5].Trim());
+            this.serialPortNumber = '3';// Convert.ToInt16(args[5].Trim());
             //}
 
             setServer();

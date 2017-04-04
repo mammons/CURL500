@@ -15,6 +15,7 @@ namespace CURL500Test
         public string type { get; set; }
         public bool isAvailable { get; set; }
         public string testName { get; set; }
+        public string portNumber { get; set; } = "COM3";
 
 
         public TestSet()

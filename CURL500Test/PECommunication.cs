@@ -17,7 +17,7 @@ namespace CURL500Test
         static StopBits stopBits = StopBits.One;
 
         static bool waitTimeout = true;
-        static int timeout = 1000;
+        static int timeout = 15000;
         static bool throwOnError = true;
         static byte[] response;
 
