@@ -297,7 +297,6 @@ namespace CURL500Test
 
             try
             {
-                loadingCircle.LoadingCircleControl.Active = true;
                 var response = await pts.getTestLimitsAsync(fiber, testSet);
                 var limits = response.ToList();
                 //Create a new TestSetLimit object to put the limits in. Adding the testset to the constructor will link the testset with the limits
@@ -311,7 +310,6 @@ namespace CURL500Test
                 "RM Max: " + testSet.limits.RemeasureMax.ToString(),
                 "<---------------->"
                     });
-                loadingCircle.LoadingCircleControl.Active = false;
             }
             catch (Exception ex)
             {
@@ -333,7 +331,7 @@ namespace CURL500Test
             
             try
             {
-                loadingCircle.LoadingCircleControl.Active = true;
+                //loadingCircle.LoadingCircleControl.Active = true;
                 submitButton.Enabled = false;
 
                 var testListString = await pts.getTestListAsync(fiber, testSet);
@@ -354,7 +352,7 @@ namespace CURL500Test
                     WriteToStatus("Test list received");
                     fiber.testList.convertReturnToTestEntries();                    
                 }
-                loadingCircle.LoadingCircleControl.Active = false;
+                //loadingCircle.LoadingCircleControl.Active = false;
                 submitButton.Enabled = true;
                 return err;
             }

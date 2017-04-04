@@ -5,7 +5,6 @@ using System.Text;
 using System.IO.Ports;
 using DevLib.IO;
 using DevLib.IO.Ports;
-using System.Threading.Tasks;
 
 namespace CURL500Test
 {
@@ -18,7 +17,7 @@ namespace CURL500Test
         static StopBits stopBits = StopBits.One;
 
         static bool waitTimeout = true;
-        static int timeout = 1000;
+        static int timeout = 10000;
         static bool throwOnError = true;
         static byte[] response;
 
@@ -29,6 +28,9 @@ namespace CURL500Test
 
         public delegate void SerialMessageReceivedEventHandler(object source, EventArgs args);
         public event SerialMessageReceivedEventHandler SerialMessageReceived;
+
+        //public delegate void SerialMessageErrorEventHandler(object source, EventArgs args);
+        //public event SerialMessageErrorEventHandler ErrorReceived;
 
         public PECommunication()
         {
@@ -55,6 +57,8 @@ namespace CURL500Test
             byte[] cmd = Encoding.ASCII.GetBytes(command + System.Environment.NewLine);
             if (port.IsOpen)
             {
+                port.DataReceived += OnDataReceived;
+                port.ErrorReceived += OnErrorReceived;
                 try
                 {
                     response = port.SendSync(cmd, waitTimeout, timeout, throwOnError);
@@ -68,9 +72,11 @@ namespace CURL500Test
             return "Port not open";
         }
 
-        public async Task<string> runCurl()
+        public string runCurl()
         {
-            var testSetReturn = await TaskEx.Run(() => sendCommand("MEASURE"));
+            string testSetReturn;
+
+            testSetReturn = sendCommand("MEASURE");
 
             if (testSetReturn.Contains("OK"))
             {
@@ -93,6 +99,16 @@ namespace CURL500Test
         {
             if (SerialMessageReceived != null)
                 SerialMessageReceived(this, EventArgs.Empty);
+        }
+
+        public void OnErrorReceived(object source, EventArgs args)
+        {
+            OnSerialMessageReceived();
+        }
+
+        public void OnDataReceived(object source, EventArgs args)
+        {
+            OnSerialMessageReceived();
         }
 
     }

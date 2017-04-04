@@ -38,12 +38,10 @@ namespace CURL500Test
 
             try
             {
-                loadingCircle.LoadingCircleControl.Active = true;
                 loginButton.Enabled = false;
                 var response = await pts.loginOperatorAsync(oper, testSet);
                 var PTSresponse = response.ToList();
 
-                loadingCircle.LoadingCircleControl.Active = false;
                 if (PTSresponse[(int)PTSField.RESPONSE_STATUS] == "0")
                 {
                     oper.loggedIn = true;
@@ -139,6 +137,7 @@ namespace CURL500Test
 
         public void OnPTSMessageSending(object source, EventArgs args)
         {
+            loadingCircle.LoadingCircleControl.Active = true;
             loginStatusLabel.Text = "Logging you in";
         }
     }

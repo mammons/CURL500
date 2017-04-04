@@ -198,14 +198,12 @@ namespace CURL500Test
 
         private async Task RunTest()
         {
-            loadingCircle.LoadingCircleControl.Active = true;
-            await GetResultData();
-            loadingCircle.LoadingCircleControl.Active = false;
+            //loadingCircle.LoadingCircleControl.Active = true;
+            GetResultData();
+            /*loadingCircle.LoadingCircleControl.Active = false*/;
             if (EvaluateResultData())
             {
-                loadingCircle.LoadingCircleControl.Active = true;
                 await SendCurlResultToPTS();
-                loadingCircle.LoadingCircleControl.Active = false;
                 if (fiber.CheckIfTestRequired(testSet))
                 {
                     if (fiber.CheckFiberNeedsRemeasure(testSet))
@@ -238,10 +236,10 @@ namespace CURL500Test
             //List<string> newPTSReturn = new List<string>();
             PTStransaction pts = new PTStransaction();
             pts.PTSMessageSending += OnPTSMessageSending;
+            pts.PTSMessageReceived += OnPTSMessageReceived;
 
             try
             {
-                loadingCircle.LoadingCircleControl.Active = true;
                 var newPTSReturn = await pts.sendCurlResultAsync(fiber, testSet);
                 WriteToStatus("Results Sent!");
                 ProcessPTSReturn(newPTSReturn.ToList());
@@ -252,6 +250,8 @@ namespace CURL500Test
             }
             
         }
+
+
 
         private bool EvaluateResultData()
         {
@@ -283,12 +283,13 @@ namespace CURL500Test
                     }
         }
 
-        public async Task GetResultData()
+        public void GetResultData()
         {
             PECommunication port = new PECommunication(portNumber);
+            
             openPort(port);
             WriteToLog("Starting curl test...");
-            var value = await port.runCurl();
+            var value = port.runCurl();
             string processedValue = ProcessPEReturn(value);
             fiber.results.curlResults.ISEradius = processedValue;
             WriteToLog(string.Format("Test complete with radius: {0}m", processedValue));
@@ -412,7 +413,13 @@ namespace CURL500Test
 
         public void OnPTSMessageSending(object source, EventArgs args)
         {
+            loadingCircle.LoadingCircleControl.Active = true;
             curlStatusLabel.Text = "Communicating with PTS...";
+        }
+
+        private void OnPTSMessageReceived(object source, EventArgs args)
+        {
+            loadingCircle.LoadingCircleControl.Active = false;
         }
 
         private void noButton_Click(object sender, EventArgs e)
