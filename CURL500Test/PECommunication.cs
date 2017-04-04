@@ -26,7 +26,7 @@ namespace CURL500Test
         public delegate void SerialMessageSendingEventHandler(object source, EventArgs args);
         public event SerialMessageSendingEventHandler SerialMessageSending;
 
-        public delegate void SerialMessageReceivedEventHandler(object source, EventArgs args);
+        public delegate void SerialMessageReceivedEventHandler(object source, PECommunicationEventArgs args);
         public event SerialMessageReceivedEventHandler SerialMessageReceived;
 
         //public delegate void SerialMessageErrorEventHandler(object source, EventArgs args);
@@ -80,6 +80,7 @@ namespace CURL500Test
 
             if (testSetReturn.Contains("OK"))
             {
+
                 testSetReturn = sendCommand("READ RESULTS");
                 return testSetReturn;
             }
@@ -89,6 +90,27 @@ namespace CURL500Test
             }
         }
 
+        public bool Measure()
+        {
+            string response = sendCommand("MEASURE");
+            if (response.Contains("OK"))
+            {
+                response = Encoding.ASCII.GetString(port.ReadSync(false, timeout, throwOnError));
+                return response.Contains("FINISHED");
+            }
+            return false;
+        }
+
+        public string ReadResult()
+        {
+            return sendCommand("READ RESULT");
+        }
+
+        //public string Measure()
+        //{
+        //    byte[] cmd = Encoding.ASCII.GetBytes("MEASURE" + System.Environment.NewLine);
+        //}
+
         protected virtual void OnSerialMessageSending()
         {
             if (SerialMessageSending != null)
@@ -97,8 +119,10 @@ namespace CURL500Test
 
         protected virtual void OnSerialMessageReceived()
         {
+            response = port.ReadSync(false, timeout, throwOnError);
+            string strResponse = Encoding.ASCII.GetString(response);
             if (SerialMessageReceived != null)
-                SerialMessageReceived(this, EventArgs.Empty);
+                SerialMessageReceived(this, new PECommunicationEventArgs(strResponse));
         }
 
         public void OnErrorReceived(object source, EventArgs args)

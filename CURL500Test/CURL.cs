@@ -198,9 +198,7 @@ namespace CURL500Test
 
         private async Task RunTest()
         {
-            //loadingCircle.LoadingCircleControl.Active = true;
-            GetResultData();
-            /*loadingCircle.LoadingCircleControl.Active = false*/;
+            if(!GetResultData()) return;
             if (EvaluateResultData())
             {
                 await SendCurlResultToPTS();
@@ -283,18 +281,31 @@ namespace CURL500Test
                     }
         }
 
-        public void GetResultData()
+        public bool GetResultData()
         {
             PECommunication port = new PECommunication(portNumber);
-            
+            //port.SerialMessageReceived += OnSerialMessageReceived;
             openPort(port);
             WriteToLog("Starting curl test...");
-            var value = port.runCurl();
-            string processedValue = ProcessPEReturn(value);
-            fiber.results.curlResults.ISEradius = processedValue;
-            WriteToLog(string.Format("Test complete with radius: {0}m", processedValue));
-            calculateOffsetForPTS(fiber.results.curlResults.ISEradius);
+
+            var success = port.Measure();
+            if (success)
+            {
+                var value = port.ReadResult();
+                string processedValue = ProcessPEReturn(value);
+                fiber.results.curlResults.ISEradius = processedValue;
+                WriteToLog(string.Format("Test complete with radius: {0}m", processedValue));
+                calculateOffsetForPTS(fiber.results.curlResults.ISEradius);
+                return true;
+            }
+            else
+            {
+                WriteToLog("Curl test failed");
+                return false;
+            }
         }
+
+
 
         private string ProcessPEReturn(string inVal)
         {
@@ -420,6 +431,11 @@ namespace CURL500Test
         private void OnPTSMessageReceived(object source, EventArgs args)
         {
             loadingCircle.LoadingCircleControl.Active = false;
+        }
+
+        private void OnSerialMessageReceived(object source, PECommunicationEventArgs args)
+        {
+            WriteToLog(args.response);
         }
 
         private void noButton_Click(object sender, EventArgs e)
