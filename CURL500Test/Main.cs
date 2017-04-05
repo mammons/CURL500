@@ -432,20 +432,20 @@ namespace CURL500Test
                     serialIdTextBox.Text = "4108542806";
                     break;
                 case "BB":
-                    fiberIdTextBox.Text = "001V24069C2CLD";
-                    serialIdTextBox.Text = "0105698362";
+                    fiberIdTextBox.Text = "024VV1435B2CLG";
+                    serialIdTextBox.Text = "5204093865";
                     break;
                 case "CC":
                     fiberIdTextBox.Text = "008VV0452B2CLG";
                     serialIdTextBox.Text = "5203881944";
                     break;
                 case "DD":
-                    fiberIdTextBox.Text = "001VV0061A1CLJ";
-                    serialIdTextBox.Text = "5204736588";
+                    fiberIdTextBox.Text = "031VF3024A1CLD";
+                    serialIdTextBox.Text = "4104631320";
                     break;
                 case "EE":
-                    fiberIdTextBox.Text = "001VV1594A1RVJ";
-                    serialIdTextBox.Text = "5204736588";
+                    fiberIdTextBox.Text = "005VV2609C2CLG";
+                    serialIdTextBox.Text = "5200289408";
                     break;
                 default:
                     fiberIdTextBox.Text = fiberIdTextBox.Text.ToUpper();
