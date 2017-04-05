@@ -10,6 +10,8 @@ using System.Threading;
 using System.Deployment.Application;
 using ObjectDumper;
 using System.Threading.Tasks;
+using NLog.Targets;
+using NLog;
 
 namespace CURL500Test
 {
@@ -21,14 +23,17 @@ namespace CURL500Test
         TestSet testSet;
         Fiber fiber = new Fiber();
 
+        private static Logger logger;
+
         string version = "1.0.0";
 
-        ErrorProvider fiberIdErrorProvider = new ErrorProvider();
+        ErrorProvider fiberIdErrorProvider = new ErrorProvider();        
 
         public Main()
         {
             testArgs = new CmdLineArgs();
             oper = new Operator();
+            logger = LogManager.GetCurrentClassLogger(); //This is called after cmdlineargs so i can get the server
             InitializeComponent();
             Show();
             showLogin();
@@ -189,8 +194,9 @@ namespace CURL500Test
             if (oper.loggedIn)
             {
                 updateTextBar();
-                WriteToOperator(string.Format("Welcome, {0}", oper.name), messageType.NORMAL);
-                WriteToStatus(string.Format("Operator {0} logged in", oper.name));
+                //WriteToOperator(string.Format("Welcome, {0}", oper.name), messageType.NORMAL);
+                //WriteToStatus(string.Format("Operator {0} logged in", oper.name));
+                logger.Info("Welcome, {0}", oper.name);
             }
             else
             {
@@ -222,7 +228,7 @@ namespace CURL500Test
         public void WriteToLog(string str)
         {
             this.mainLogTextBox.AppendText(str + "\r\n");
-            Log.permaLog(testSet.sessionInfo, str);
+            logger.Info(str);
         }
 
         public void WriteToLog(List<string> strs)
@@ -257,12 +263,13 @@ namespace CURL500Test
                     break;
             }
             operatorMessageBox.Text = v;
-            WriteToLog(v);
+            //WriteToLog(v);
+            logger.Info(v);
         }
         private void WriteToResultsBox(string str)
         {
             this.resultsTextBox.AppendText(str);
-            Log.permaLog(testSet.sessionInfo, (ObjectDumperExtensions.DumpToString(fiber.results, "Detail Results")));
+            logger.Info(testSet.sessionInfo, (ObjectDumperExtensions.DumpToString(fiber.results, "Detail Results")));
         }
 
         private void WriteToStatus(string str)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -20,10 +21,12 @@ namespace CURL500Test
         public delegate void PTSMessageReceivedEventHandler(object source, EventArgs args);
         public event PTSMessageReceivedEventHandler PTSMessageReceived;
 
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
 
         public PTStransaction()
         {
-            serverUri = Properties.Settings.Default.Server == "DEV" ? developmentUri : productionUri;
+            serverUri = System.Configuration.ConfigurationManager.AppSettings["Server"] == "DEV" ? developmentUri : productionUri;
         }
 
 
@@ -82,7 +85,7 @@ namespace CURL500Test
             catch(Exception ex)
             {
                 List<string> errorMessage = new List<string> { "Exception in PTStransaction.sendCurlResultsAsync: " + ex.Message };
-                Log.permaLog(tset.sessionInfo, errorMessage.ToString());
+                logger.Error(tset.sessionInfo, errorMessage.ToString());
                 return errorMessage;
             }
         }
@@ -125,7 +128,7 @@ namespace CURL500Test
             catch (Exception ex)
             {
                 List<string> errMessage = new List<string> { "Exception in PTStransaction.getTestListAsync :" + ex.Message};
-                Log.permaLog(tset.sessionInfo, errMessage.ToString());
+                logger.Error(tset.sessionInfo, errMessage.ToString());
                 return errMessage;
             }
 

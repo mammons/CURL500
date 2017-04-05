@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,8 @@ namespace CURL500Test
         public bool loggedIn { get; set; }
 
         TestSet tset { get; set; }
+
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
 
         public Operator(string name, string Id, TestSet tset)
@@ -42,7 +45,7 @@ namespace CURL500Test
                 }
                 catch(Exception ex)
                 {
-                    Log.permaLog(tset.sessionInfo, "Exception in Operator.login: " + ex.Message);
+                    logger.Error(tset.sessionInfo, "Exception in Operator.login: " + ex.Message);
                 }
 
             }

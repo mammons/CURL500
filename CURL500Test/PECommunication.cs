@@ -61,12 +61,14 @@ namespace CURL500Test
                 port.ErrorReceived += OnErrorReceived;
                 try
                 {
+                    OnSerialMessageSending();
                     response = port.SendSync(cmd, waitTimeout, timeout, throwOnError);
                 }
                 catch (Exception ex)
                 {
                     return ex.Message + ex.StackTrace;
                 }
+                OnSerialMessageReceived();
                 return Encoding.ASCII.GetString(response);
             }
             return "Port not open";

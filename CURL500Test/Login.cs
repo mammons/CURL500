@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading.Tasks;
+using NLog;
 
 namespace CURL500Test
 {
@@ -17,6 +18,7 @@ namespace CURL500Test
         public TestSet testSet { get; set; }
         private ErrorProvider passwordErrorProvider;
         private ErrorProvider usernameErrorProvider;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public Login(Operator oper, TestSet tset)
         {
@@ -58,7 +60,7 @@ namespace CURL500Test
             }
             catch(Exception ex)
             {
-                Log.permaLog(testSet.sessionInfo, ex.Message);
+                logger.Error(ex);
             }
         }
 

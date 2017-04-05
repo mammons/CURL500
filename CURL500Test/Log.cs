@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NLog;
+using NLog.Targets;
+using System;
 using System.IO;
 
 namespace CURL500Test
@@ -9,6 +11,8 @@ namespace CURL500Test
         public static string localPath  = Path.Combine(localFolderName, DateTime.Now.ToString("yyyyMMdd") + "--Log.txt");
         public static string networkFolderName = @"\\nordevengr01\userapps\apps\CURL500\Logs\" + Properties.Settings.Default.Server;
         public static string networkPath = Path.Combine(networkFolderName, DateTime.Now.ToString("yyyyMMdd") + "--Log.txt");
+
+        
 
         public static void permaLog(string sessionInfo, string text)
         {

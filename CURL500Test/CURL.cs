@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,7 +17,7 @@ namespace CURL500Test
     {
         public Fiber fiber { get; set; }
         public TestSet testSet { get; set; }
-        //CurlResults curlResult { get; set; }
+        
         FileSystemWatcher watcher;
 
 
@@ -24,6 +25,8 @@ namespace CURL500Test
         private const int delayOnRetry = 1000;
 
         private const double gaugeLengthInMeters = 0.01893;
+
+        private Logger logger = LogManager.GetCurrentClassLogger();
 
         public bool manualEntry = false;
 
@@ -246,7 +249,7 @@ namespace CURL500Test
             }
             catch(Exception ex)
             {
-                Log.permaLog(testSet.sessionInfo, "Exception sending curl results to PTS: " + ex);
+                logger.Error(testSet.sessionInfo, "Exception sending curl results to PTS: " + ex);
             }
             return;   
         }

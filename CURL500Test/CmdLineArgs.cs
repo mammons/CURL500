@@ -9,7 +9,7 @@ namespace CURL500Test
 {
     class CmdLineArgs
     {
-        public string server { get; set; }
+        public string server { get; set; } = System.Configuration.ConfigurationManager.AppSettings["Server"];
         public string testSetNumber { get; set; }
         public string testSetName { get; set; }
         public string workstation { get; set; }
@@ -45,14 +45,14 @@ namespace CURL500Test
             //else
             //{
             //TODO get this working with clickonce commandline arguments
-            this.server = "DEV";// args[1].Trim();
+            //this.server = "DEV";// args[1].Trim();
             this.workstation = "1S";// args[2].Trim();
             this.testSetName = "LTCURL";// args[3].Trim();
             this.testSetNumber = "01";// args[4].Trim();
             this.serialPortNumber = '3';// Convert.ToInt16(args[5].Trim());
             //}
 
-            setServer();
+            //setServer();
         }
 
         private void setServer()
@@ -60,16 +60,19 @@ namespace CURL500Test
             switch (server)
             {
                 case "PROD":
-                    Properties.Settings.Default.Server = "PROD";
+                    //Properties.Settings.Default.Server = "PROD";
+                    System.Configuration.ConfigurationManager.AppSettings["Server"] = "PROD";
                     break;
                 case "DEV":
-                    Properties.Settings.Default.Server = "DEV";
+                    //Properties.Settings.Default.Server = "DEV";
+                    System.Configuration.ConfigurationManager.AppSettings["Server"] = "DEV";
                     break;
                 case "SIM":
                     Properties.Settings.Default.Server = "SIM";
                     break;
                 default:
-                    Properties.Settings.Default.Server = "PROD";
+                    //Properties.Settings.Default.Server = "PROD";
+                    System.Configuration.ConfigurationManager.AppSettings["Server"] = "PROD";
                     break;
             }
         }
