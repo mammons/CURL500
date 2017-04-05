@@ -103,13 +103,8 @@ namespace CURL500Test
 
         public string ReadResult()
         {
-            return sendCommand("READ RESULT");
+            return sendCommand("READ RESULTS");
         }
-
-        //public string Measure()
-        //{
-        //    byte[] cmd = Encoding.ASCII.GetBytes("MEASURE" + System.Environment.NewLine);
-        //}
 
         protected virtual void OnSerialMessageSending()
         {
@@ -119,7 +114,7 @@ namespace CURL500Test
 
         protected virtual void OnSerialMessageReceived()
         {
-            response = port.ReadSync(false, timeout, throwOnError);
+            //response = port.ReadSync(false, timeout, throwOnError);
             string strResponse = Encoding.ASCII.GetString(response);
             if (SerialMessageReceived != null)
                 SerialMessageReceived(this, new PECommunicationEventArgs(strResponse));

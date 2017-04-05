@@ -30,7 +30,7 @@ namespace CURL500Test
         private string prodbeforeFile = AppDomain.CurrentDomain.BaseDirectory + "FiberData.ini";
         private string prodafterFile = AppDomain.CurrentDomain.BaseDirectory + "ResultData.ini";
         private string path = @"C:\CURL400\results";
-        private string portNumber = "COM1";
+        private string portNumber;
 
 
 
@@ -39,6 +39,7 @@ namespace CURL500Test
         {
             this.fiber = fiber;
             this.testSet = testSet;
+            this.portNumber = testSet.portNumber;
             InitializeComponent();
             BeginTest();
         }
@@ -238,6 +239,7 @@ namespace CURL500Test
 
             try
             {
+                WriteToLog("Sending results to PTS");
                 var newPTSReturn = await pts.sendCurlResultAsync(fiber, testSet);
                 WriteToStatus("Results Sent!");
                 ProcessPTSReturn(newPTSReturn.ToList());
@@ -246,17 +248,14 @@ namespace CURL500Test
             {
                 Log.permaLog(testSet.sessionInfo, "Exception sending curl results to PTS: " + ex);
             }
-            
+            return;   
         }
-
 
 
         private bool EvaluateResultData()
         {
             double resultValue = fiber.results.curlResults.ISEvalue;
             //check curl result against limits
-
-
                     if (resultValue > -1)
                     {
                         if (resultValue < testSet.limits.Fail ||
@@ -276,7 +275,7 @@ namespace CURL500Test
                     }
                     else
                     {
-                        WriteToLog("-> There was a problem with your entry. Please try the test again");
+                        WriteToLog("-> There was a problem with the result value. Please try the test again");
                         return false;
                     }
         }
@@ -295,6 +294,7 @@ namespace CURL500Test
                 string processedValue = ProcessPEReturn(value);
                 fiber.results.curlResults.ISEradius = processedValue;
                 WriteToLog(string.Format("Test complete with radius: {0}m", processedValue));
+                radiusResultLabel.Text = processedValue;
                 calculateOffsetForPTS(fiber.results.curlResults.ISEradius);
                 return true;
             }
@@ -430,6 +430,7 @@ namespace CURL500Test
 
         private void OnPTSMessageReceived(object source, EventArgs args)
         {
+            if(!this.IsDisposed)
             loadingCircle.LoadingCircleControl.Active = false;
         }
 

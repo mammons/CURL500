@@ -32,6 +32,7 @@ namespace CURL500Test
             InitializeComponent();
             Show();
             showLogin();
+            UpdateCOMMenuItems(testSet.portNumber);
         }
 
 
@@ -52,7 +53,7 @@ namespace CURL500Test
         /// <param name="e"></param>
         private async void submitButton_Click(object sender, EventArgs e)
         {
-            
+
             AssignIdsToFiber();
             //Get the test list
             try
@@ -80,10 +81,10 @@ namespace CURL500Test
                     WriteToOperator(err, messageType.URGENT);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 WriteToLog("Exception in Main.submit : " + ex.Message);
-            }        
+            }
         }
 
         private void PerformTest()
@@ -314,7 +315,7 @@ namespace CURL500Test
             catch (Exception ex)
             {
                 WriteToLog(ex.Message);
-            }        
+            }
         }
 
         private async Task<string> GetTestListAsync()
@@ -328,7 +329,7 @@ namespace CURL500Test
             pts.PTSMessageSending += OnPTSMessageSending;
             pts.PTSMessageReceived += OnPTSMessageReceived;
 
-            
+
             try
             {
                 //loadingCircle.LoadingCircleControl.Active = true;
@@ -350,13 +351,13 @@ namespace CURL500Test
                 else
                 {
                     WriteToStatus("Test list received");
-                    fiber.testList.convertReturnToTestEntries();                    
+                    fiber.testList.convertReturnToTestEntries();
                 }
                 //loadingCircle.LoadingCircleControl.Active = false;
                 submitButton.Enabled = true;
                 return err;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 WriteToLog("Exception getting testlist: " + ex.Message);
             }
@@ -459,6 +460,36 @@ namespace CURL500Test
         private void COMToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             testSet.portNumber = e.ClickedItem.Text;
+            UpdateCOMMenuItems(e.ClickedItem);
+        }
+
+        private void UpdateCOMMenuItems(ToolStripItem clickedItem)
+        {
+            // Set the current clicked item to item
+            ToolStripMenuItem item = clickedItem as ToolStripMenuItem;
+            ToolStripMenuItem ownerItem = (ToolStripMenuItem)item.OwnerItem;
+            // Loop through all items in the subMenu and uncheck them but do check the clicked item
+            foreach (ToolStripMenuItem tempItemp in ownerItem.DropDownItems)
+            {
+                if (tempItemp == item)
+                    tempItemp.Checked = true;
+                else
+                    tempItemp.Checked = false;
+            }
+        }
+
+        private void UpdateCOMMenuItems(string clickedItem)
+        {
+            // Set the current clicked item to item
+            ToolStripMenuItem ownerItem = (ToolStripMenuItem)COMToolStripMenuItem;
+            // Loop through all items in the subMenu and uncheck them but do check the clicked item
+            foreach (ToolStripMenuItem tempItemp in ownerItem.DropDownItems)
+            {
+                if (tempItemp.Text == clickedItem)
+                    tempItemp.Checked = true;
+                else
+                    tempItemp.Checked = false;
+            }
         }
     }
 }
