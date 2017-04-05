@@ -179,6 +179,7 @@ namespace CURL500Test
         public void WriteToLog(string str)
         {
             curlLog.AppendText(str + Environment.NewLine);
+            logger.Info(str);
         }
 
         public void WriteToLog(List<string> strs)
@@ -192,7 +193,7 @@ namespace CURL500Test
         public void WriteToLog(string str, bool clear)
         {
             if (clear) curlLog.Clear();
-            curlLog.AppendText(str);
+            WriteToLog(str);
         }
 
         public void WriteToStatus(string str)
@@ -202,7 +203,8 @@ namespace CURL500Test
 
         private async Task RunTest()
         {
-            if(!GetResultData()) return;
+            var gotResults = await GetResultData();
+            if(!gotResults) return;
             if (EvaluateResultData())
             {
                 await SendCurlResultToPTS();
@@ -283,17 +285,18 @@ namespace CURL500Test
                     }
         }
 
-        public bool GetResultData()
+        public async Task<bool> GetResultData()
         {
             PECommunication port = new PECommunication(portNumber);
-            //port.SerialMessageReceived += OnSerialMessageReceived;
+            port.SerialMessageReceived += OnSerialMessageReceived;
+            port.SerialMessageSending += OnSerialMessageSending;
             openPort(port);
             WriteToLog("Starting curl test...");
 
-            var success = port.Measure();
+            var success = await port.MeasureCurl();
             if (success)
             {
-                var value = port.ReadResult();
+                var value = await port.ReadResult();
                 string processedValue = ProcessPEReturn(value);
                 fiber.results.curlResults.ISEradius = processedValue;
                 WriteToLog(string.Format("Test complete with radius: {0}m", processedValue));
@@ -308,10 +311,9 @@ namespace CURL500Test
             }
         }
 
-
-
         private string ProcessPEReturn(string inVal)
         {
+            //TODO PE returns a \r with the radius so remove that before assigning it to properties because it's messing up logging
             string outVal = inVal.Substring(0, inVal.Length-1);
 
             if (outVal.Contains("FAIL"))
@@ -439,7 +441,13 @@ namespace CURL500Test
 
         private void OnSerialMessageReceived(object source, PECommunicationEventArgs args)
         {
+            loadingCircle.LoadingCircleControl.Active = false;
             WriteToLog(args.response);
+        }
+
+        private void OnSerialMessageSending(object source, EventArgs args)
+        {
+            loadingCircle.LoadingCircleControl.Active = true;
         }
 
         private void noButton_Click(object sender, EventArgs e)

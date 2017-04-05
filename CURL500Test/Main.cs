@@ -339,7 +339,6 @@ namespace CURL500Test
 
             try
             {
-                //loadingCircle.LoadingCircleControl.Active = true;
                 submitButton.Enabled = false;
 
                 var testListString = await pts.getTestListAsync(fiber, testSet);
@@ -360,7 +359,6 @@ namespace CURL500Test
                     WriteToStatus("Test list received");
                     fiber.testList.convertReturnToTestEntries();
                 }
-                //loadingCircle.LoadingCircleControl.Active = false;
                 submitButton.Enabled = true;
                 return err;
             }

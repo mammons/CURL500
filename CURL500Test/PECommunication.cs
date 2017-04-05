@@ -5,6 +5,7 @@ using System.Text;
 using System.IO.Ports;
 using DevLib.IO;
 using DevLib.IO.Ports;
+using System.Threading.Tasks;
 
 namespace CURL500Test
 {
@@ -52,17 +53,18 @@ namespace CURL500Test
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
-        public string sendCommand(string command)
+        public async Task<string> sendCommand(string command)
         {
             byte[] cmd = Encoding.ASCII.GetBytes(command + System.Environment.NewLine);
             if (port.IsOpen)
             {
-                port.DataReceived += OnDataReceived;
-                port.ErrorReceived += OnErrorReceived;
+                //port.DataReceived += OnDataReceived;
+                //port.ErrorReceived += OnErrorReceived;
                 try
                 {
                     OnSerialMessageSending();
-                    response = port.SendSync(cmd, waitTimeout, timeout, throwOnError);
+                    response = await TaskEx.Run(() =>
+                        port.SendSync(cmd, waitTimeout, timeout, throwOnError));
                 }
                 catch (Exception ex)
                 {
@@ -74,38 +76,22 @@ namespace CURL500Test
             return "Port not open";
         }
 
-        public string runCurl()
+        public async Task<bool> MeasureCurl()
         {
-            string testSetReturn;
-
-            testSetReturn = sendCommand("MEASURE");
-
-            if (testSetReturn.Contains("OK"))
-            {
-
-                testSetReturn = sendCommand("READ RESULTS");
-                return testSetReturn;
-            }
-            else
-            {
-                return "FAILED";
-            }
-        }
-
-        public bool Measure()
-        {
-            string response = sendCommand("MEASURE");
+            string response = await sendCommand("MEASURE");
             if (response.Contains("OK"))
             {
+                OnSerialMessageSending();
                 response = Encoding.ASCII.GetString(port.ReadSync(false, timeout, throwOnError));
+                OnSerialMessageReceived();
                 return response.Contains("FINISHED");
             }
             return false;
         }
 
-        public string ReadResult()
+        public async Task<string> ReadResult()
         {
-            return sendCommand("READ RESULTS");
+            return await sendCommand("READ RESULTS");
         }
 
         protected virtual void OnSerialMessageSending()
@@ -116,7 +102,6 @@ namespace CURL500Test
 
         protected virtual void OnSerialMessageReceived()
         {
-            //response = port.ReadSync(false, timeout, throwOnError);
             string strResponse = Encoding.ASCII.GetString(response);
             if (SerialMessageReceived != null)
                 SerialMessageReceived(this, new PECommunicationEventArgs(strResponse));

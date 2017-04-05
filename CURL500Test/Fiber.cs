@@ -60,6 +60,11 @@ namespace CURL500Test
             return testList.ptsReturn[9] == "REFR";
         }
 
+        public bool isNSTD()
+        {
+            return testList.ptsReturn[9] == "NSTD";
+        }
+
         public string getLastResult(string lastTest)
         {
             return results.lastTestResult;
