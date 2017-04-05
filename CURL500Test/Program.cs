@@ -25,11 +25,11 @@ namespace CURL500Test
             Exception e = (Exception)args.ExceptionObject;
             try
             {
-                System.IO.File.AppendAllText(@"\\nordevengr01\userapps\apps\CURL400\ErrorLog.txt", "Unhandled exception: " + e + Environment.NewLine);
+                System.IO.File.AppendAllText(@"\\nordevengr01\userapps\apps\CURL500\ErrorLog.txt", "Unhandled exception: " + e + Environment.NewLine);
             }
             catch (Exception ex)
             {
-                System.IO.File.AppendAllText(@"\\nordevengr01\userapps\apps\CURL400\ErrorLog.txt", "ERROR IN TRY THIS WON'T WORK I DON'T THINK: " + ex.Message);
+                System.IO.File.AppendAllText(@"\\nordevengr01\userapps\apps\CURL500\ErrorLog.txt", "ERROR IN TRY THIS WON'T WORK I DON'T THINK: " + ex.Message);
             }
         }
     }

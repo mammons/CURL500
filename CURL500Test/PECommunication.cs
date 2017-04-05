@@ -17,7 +17,7 @@ namespace CURL500Test
         static StopBits stopBits = StopBits.One;
 
         static bool waitTimeout = true;
-        static int timeout = 15000;
+        static int timeout = 10000;
         static bool throwOnError = true;
         static byte[] response;
 
@@ -26,8 +26,11 @@ namespace CURL500Test
         public delegate void SerialMessageSendingEventHandler(object source, EventArgs args);
         public event SerialMessageSendingEventHandler SerialMessageSending;
 
-        public delegate void SerialMessageReceivedEventHandler(object source, EventArgs args);
+        public delegate void SerialMessageReceivedEventHandler(object source, PECommunicationEventArgs args);
         public event SerialMessageReceivedEventHandler SerialMessageReceived;
+
+        //public delegate void SerialMessageErrorEventHandler(object source, EventArgs args);
+        //public event SerialMessageErrorEventHandler ErrorReceived;
 
         public PECommunication()
         {
@@ -54,6 +57,8 @@ namespace CURL500Test
             byte[] cmd = Encoding.ASCII.GetBytes(command + System.Environment.NewLine);
             if (port.IsOpen)
             {
+                port.DataReceived += OnDataReceived;
+                port.ErrorReceived += OnErrorReceived;
                 try
                 {
                     response = port.SendSync(cmd, waitTimeout, timeout, throwOnError);
@@ -70,10 +75,12 @@ namespace CURL500Test
         public string runCurl()
         {
             string testSetReturn;
+
             testSetReturn = sendCommand("MEASURE");
 
             if (testSetReturn.Contains("OK"))
             {
+
                 testSetReturn = sendCommand("READ RESULTS");
                 return testSetReturn;
             }
@@ -81,6 +88,22 @@ namespace CURL500Test
             {
                 return "FAILED";
             }
+        }
+
+        public bool Measure()
+        {
+            string response = sendCommand("MEASURE");
+            if (response.Contains("OK"))
+            {
+                response = Encoding.ASCII.GetString(port.ReadSync(false, timeout, throwOnError));
+                return response.Contains("FINISHED");
+            }
+            return false;
+        }
+
+        public string ReadResult()
+        {
+            return sendCommand("READ RESULTS");
         }
 
         protected virtual void OnSerialMessageSending()
@@ -91,8 +114,20 @@ namespace CURL500Test
 
         protected virtual void OnSerialMessageReceived()
         {
+            //response = port.ReadSync(false, timeout, throwOnError);
+            string strResponse = Encoding.ASCII.GetString(response);
             if (SerialMessageReceived != null)
-                SerialMessageReceived(this, EventArgs.Empty);
+                SerialMessageReceived(this, new PECommunicationEventArgs(strResponse));
+        }
+
+        public void OnErrorReceived(object source, EventArgs args)
+        {
+            OnSerialMessageReceived();
+        }
+
+        public void OnDataReceived(object source, EventArgs args)
+        {
+            OnSerialMessageReceived();
         }
 
     }

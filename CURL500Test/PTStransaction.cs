@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace CURL500Test
 {
     class PTStransaction
     {
-        public string sendMessage { get; set; }
-        public string responseMessage { get; set; }
+        //public string sendMessage { get; set; }
+        //public string responseMessage { get; set; }
         public List<string> responseList { get; set; }
         public string serverUri { get; set; }
         public string developmentUri = "http://devpts.ganor.ofsoptics.com";
@@ -26,45 +27,40 @@ namespace CURL500Test
         }
 
 
-        public bool SendReceive(string sendMessage, out string responseMessage)
+        public async Task<string> SendReceiveAsync(string sendMessage)
         {
-            this.sendMessage = sendMessage;
-
-            using (var client = new HttpClient())
+            string responseString;
+            using (var client = new HttpClient(new HttpClientHandler { UseProxy = false }))
             {
                 client.BaseAddress = new Uri(serverUri);
-                HttpResponseMessage responsePost = new HttpResponseMessage();
+                StringContent msgToPTS = new StringContent(sendMessage);
                 string url = "/norcross/pts/Measurement/TestSetTransactions/api/TestSetTransactions/";
+
                 try
                 {
                     OnPTSMessageSending();
-                    responsePost = client.PostAsync(url, new StringContent(sendMessage)).Result;
+                    var response = await client.PostAsync(url, msgToPTS);
                     OnPTSMessageReceived();
+                    if (response.IsSuccessStatusCode)
+                    {
+                        responseString = response.Content.ReadAsStringAsync().Result;
+                    }
+                    else
+                    {
+                        responseString = "[ERROR] No response in HTTP request";
+                    }
                 }
                 catch (Exception eR)
                 {
-                    responseMessage = "[ERROR] Exception in HTTP request to PTS: " + eR;
-                    return false;
-                }
-
-                if (responsePost.IsSuccessStatusCode)
-                {
-                    responseMessage = responsePost.Content.ReadAsStringAsync().Result;
-                }
-                else
-                {
-                    responseMessage = "[ERROR] No response in HTTP request";
-                    return false;
+                    responseString = "[ERROR] Exception in HTTP request to PTS: " + eR;
                 }
             }
-            return true;
+            return responseString;
         }
 
-        public IEnumerable<string> sendCurlResult(Fiber fiber, TestSet tset)
+        public async Task<IEnumerable<string>> sendCurlResultAsync(Fiber fiber, TestSet tset)
         {
-            string response;
-
-            sendMessage = string.Format("{0}:{1}:{2}:{3}:UP:CR:{4}:CURL:OSE:{5}:{6}:{7}:0:ISE:{8}:{9}:{10}:1:MARK:{11}",
+            string sendMessage = string.Format("{0}:{1}:{2}:{3}:UP:CR:{4}:CURL:OSE:{5}:{6}:{7}:0:ISE:{8}:{9}:{10}:1:MARK:{11}",
                 tset.workstation,//0
                 tset.name,//1
                 tset.number,//2
@@ -78,19 +74,25 @@ namespace CURL500Test
                 fiber.results.curlResults.ISEtestcode,//10
                 fiber.testList.markNumber);//11
 
-            SendReceive(sendMessage, out response);
-            return ParsePTSResponse(response);
+            try
+            {
+                var response = await SendReceiveAsync(sendMessage);
+                return ParsePTSResponse(response);
+            }
+            catch(Exception ex)
+            {
+                List<string> errorMessage = new List<string> { "Exception in PTStransaction.sendCurlResultsAsync: " + ex.Message };
+                Log.permaLog(tset.sessionInfo, errorMessage.ToString());
+                return errorMessage;
+            }
         }
 
-        public IEnumerable<string> loginOperator(Operator oper, TestSet tset)
+        public async Task<IEnumerable<string>> loginOperatorAsync(Operator oper, TestSet tset)
         {
-            string response;
-
-            sendMessage = string.Format("{0}:{1}:{2}:{3}:RE:OP:{4}:", tset.workstation, tset.name, tset.number, oper.Id, oper.password);
-            SendReceive(sendMessage, out response);
+            string sendMessage = string.Format("{0}:{1}:{2}:{3}:RE:OP:{4}:", tset.workstation, tset.name, tset.number, oper.Id, oper.password);
+            var response = await SendReceiveAsync(sendMessage);
 
             return ParsePTSResponse(response);
-
         }
 
         /// <summary>
@@ -110,17 +112,23 @@ namespace CURL500Test
         /// <param name="fiber"></param>
         /// <param name="tset"></param>
         /// <returns>Returns the parsed version of the PTS response</returns>
-        public IEnumerable<string> getTestList(Fiber fiber, TestSet tset)
+        public async Task<IEnumerable<string>> getTestListAsync(Fiber fiber, TestSet tset)
         {
-            string response;
-
             fiber.formatIdForPTS();
-            sendMessage = string.Format("{0}:{1}:{2}:{3}:RE:FI:{4}:{5}", tset.workstation, tset.name, tset.number, tset.oper.Id, fiber.fiberId, fiber.serialId);
-            SendReceive(sendMessage, out response);
-            //-------------SIMULATION----------------//
-            //response = "2S:LTCURL:2S:MRA:RE:FI:1:RWR014930586    :Reference spool measurements required:";
-            //-------------/SIMULATION--------------//
-            return ParsePTSResponse(response);
+            string sendMessage = string.Format("{0}:{1}:{2}:{3}:RE:FI:{4}:{5}", tset.workstation, tset.name, tset.number, tset.oper.Id, fiber.fiberId, fiber.serialId);
+
+            try
+            {
+                var response = await SendReceiveAsync(sendMessage);
+                return ParsePTSResponse(response);
+            }
+            catch (Exception ex)
+            {
+                List<string> errMessage = new List<string> { "Exception in PTStransaction.getTestListAsync :" + ex.Message};
+                Log.permaLog(tset.sessionInfo, errMessage.ToString());
+                return errMessage;
+            }
+
         }
 
         /// <summary>
@@ -130,16 +138,13 @@ namespace CURL500Test
         /// <param name="fiber"></param>
         /// <param name="tset"></param>
         /// <returns></returns>
-        public IEnumerable<string> getTestLimits(Fiber fiber, TestSet tset)
+        public async Task<IEnumerable<string>> getTestLimitsAsync(Fiber fiber, TestSet tset)
         {
-            string response;
-
             fiber.formatIdForPTS();
-            sendMessage = string.Format("{0}:{1}:{2}:{3}:RE:LM:{4}", tset.workstation, tset.name, tset.number, tset.oper.Id, fiber.fiberId);
-            SendReceive(sendMessage, out response);
+            string sendMessage = string.Format("{0}:{1}:{2}:{3}:RE:LM:{4}", tset.workstation, tset.name, tset.number, tset.oper.Id, fiber.fiberId);
+            var response = await SendReceiveAsync(sendMessage);
 
             return ParsePTSResponse(response);
-
         }
 
         protected virtual void OnPTSMessageSending()

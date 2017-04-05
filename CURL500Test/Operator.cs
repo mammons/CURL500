@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CURL500Test
 {
@@ -29,12 +30,21 @@ namespace CURL500Test
             this.tset = null;
         }
 
-        private IEnumerable<string> login()
+        private async Task<IEnumerable<string>> login()
         {
             PTStransaction pts = new PTStransaction();
             if (this.name != null && this.password != null)
             {
-                return pts.loginOperator(this, tset).ToList(); //true if success else false
+                try
+                {
+                    var response = await pts.loginOperatorAsync(this, tset);
+                    return response.ToList();
+                }
+                catch(Exception ex)
+                {
+                    Log.permaLog(tset.sessionInfo, "Exception in Operator.login: " + ex.Message);
+                }
+
             }
             return null; //either name or password was null
         }

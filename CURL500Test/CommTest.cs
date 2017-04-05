@@ -15,19 +15,25 @@ namespace CURL500Test
 
         public partial class CommTest : Form
         {
-            static string portName = "COM3";
+            static string portName = "COM1";
             static int baudRate = 9600;
             static Parity parity = Parity.None;
             static int dataBits = 8;
             static StopBits stopBits = StopBits.One;
 
             //static bool waitTimeout = false;
-            static int timeout = 3000;
+            static int timeout = 20000;
             static bool throwOnError = true;
             byte[] response;
 
+            static Timer r = new System.Windows.Forms.Timer();
+        
+
+
+
+
         SyncSerialPort port;
-            
+        PECommunication myPort;       
 
 
 
@@ -41,6 +47,7 @@ namespace CURL500Test
                 //port.DataReceived += new SerialDataReceivedEventHandler(port_DataReceived);
                 InitializeComponent();
                 port = new SyncSerialPort(portName, baudRate, parity, dataBits, stopBits);
+            myPort = new PECommunication(portName);
             if (port.Open())
                 {
                     tb.AppendText(string.Format("Port: {0} open\n", portName));
@@ -59,6 +66,7 @@ namespace CURL500Test
             InitializeComponent();
             portName = newPort;
             port = new SyncSerialPort(portName, baudRate, parity, dataBits, stopBits);
+            myPort = new PECommunication(portName);
             try
             {
                 if (port.Open())
@@ -93,24 +101,51 @@ namespace CURL500Test
 
             private void sendBtn_Click(object sender, EventArgs e)
             {
-
-                //try
-                //{
-                //    port.Write(command.Text);
-                //    tb.AppendText(port.BytesToWrite.ToString());
-                //}catch(Exception ex)
-                //{
-                //    tb.AppendText(ex.Message + System.Environment.NewLine);
-                //}
-                byte[] cmd = Encoding.ASCII.GetBytes(command.Text + System.Environment.NewLine);
-
-                tb.AppendText(string.Format("sending command: ----- {0}\r\n", command.Text));
-                response = port.SendSync(cmd, true, timeout, throwOnError);
-                //response = port.ReadSync(false, timeout, throwOnError);
-                tb.AppendText(Encoding.ASCII.GetString(response));
-                tb.AppendText(string.Format("-------------complete------------------" + Environment.NewLine));
+            sendCom(command.Text);
             }
+
+        private void readBtn_Click(object sender, EventArgs e)
+        {
+            response = port.ReadSync(false, timeout, throwOnError);
+            tb.AppendText("ReadSync " + Encoding.ASCII.GetString(response));
+        }
+
+        private void measureBtn_Click(object sender, EventArgs e)
+        {
+            sendCom("MEASURE");
+        }
+
+        private void statusBtn_Click(object sender, EventArgs e)
+        {
+           sendCom("STATUS");
+        }
+
+        public void sendCom(string command)
+        {
+            byte[] cmd = Encoding.ASCII.GetBytes(command + System.Environment.NewLine);
+
+            tb.AppendText(string.Format("sending command: ----- {0}\r\n", command));
+            response = port.SendSync(cmd, false, timeout, throwOnError);
+
+            tb.AppendText("SendSync " + Encoding.ASCII.GetString(response) + Environment.NewLine);
+
+            if (command == "MEASURE")
+            {
+                response = port.ReadSync(false, timeout, throwOnError);
+                tb.AppendText("ReadSync " + Encoding.ASCII.GetString(response) + Environment.NewLine);
+            }
+
+            tb.AppendText(string.Format("-------------complete------------------" + Environment.NewLine));
+
+        }
+
+        private void readResultBtn_Click(object sender, EventArgs e)
+        {
+            sendCom("READ RESULTS");
+        }
     }
+
+
 
     class PortCommunication
         {

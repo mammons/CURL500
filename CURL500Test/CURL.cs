@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CURL500Test
@@ -28,8 +29,8 @@ namespace CURL500Test
 
         private string prodbeforeFile = AppDomain.CurrentDomain.BaseDirectory + "FiberData.ini";
         private string prodafterFile = AppDomain.CurrentDomain.BaseDirectory + "ResultData.ini";
-        private string path = @"C:\CURL500\results";
-        private string portNumber = "COM3";
+        private string path = @"C:\CURL400\results";
+        private string portNumber;
 
 
 
@@ -38,6 +39,7 @@ namespace CURL500Test
         {
             this.fiber = fiber;
             this.testSet = testSet;
+            this.portNumber = testSet.portNumber;
             InitializeComponent();
             BeginTest();
         }
@@ -195,12 +197,12 @@ namespace CURL500Test
             curlStatusLabel.Text = str;
         }
 
-        private void RunTest()
+        private async Task RunTest()
         {
-            GetResultData();
+            if(!GetResultData()) return;
             if (EvaluateResultData())
             {
-                SendCurlResultToPTS();
+                await SendCurlResultToPTS();
                 if (fiber.CheckIfTestRequired(testSet))
                 {
                     if (fiber.CheckFiberNeedsRemeasure(testSet))
@@ -228,68 +230,93 @@ namespace CURL500Test
             }
         }
 
-        private void SendCurlResultToPTS()
+        private async Task SendCurlResultToPTS()
         {
-            List<string> newPTSReturn = new List<string>();
+            //List<string> newPTSReturn = new List<string>();
             PTStransaction pts = new PTStransaction();
             pts.PTSMessageSending += OnPTSMessageSending;
-            newPTSReturn = pts.sendCurlResult(fiber, testSet).ToList();
-            WriteToStatus("Results Sent!");
-            ProcessPTSReturn(newPTSReturn);
+            pts.PTSMessageReceived += OnPTSMessageReceived;
+
+            try
+            {
+                WriteToLog("Sending results to PTS");
+                var newPTSReturn = await pts.sendCurlResultAsync(fiber, testSet);
+                WriteToStatus("Results Sent!");
+                ProcessPTSReturn(newPTSReturn.ToList());
+            }
+            catch(Exception ex)
+            {
+                Log.permaLog(testSet.sessionInfo, "Exception sending curl results to PTS: " + ex);
+            }
+            return;   
         }
+
 
         private bool EvaluateResultData()
         {
             double resultValue = fiber.results.curlResults.ISEvalue;
             //check curl result against limits
-            if (resultValue > -1)
+                    if (resultValue > -1)
+                    {
+                        if (resultValue < testSet.limits.Fail ||
+                            resultValue > testSet.limits.Pass
+                            )
+                        {
+                            fiber.results.curlResults.ISEresult = "F";
+                            fiber.results.curlResults.ISEtestcode = fiber.results.curlResults.ISEtestcode == "RM" ? "FF" : "RM";
+                        }
+                        else
+                        {
+                            fiber.results.curlResults.ISEresult = "P";
+                            fiber.results.curlResults.ISEtestcode = "PP";
+                        }
+                        fiber.results.lastTestResult = fiber.results.curlResults.ISEresult;
+                        return true;
+                    }
+                    else
+                    {
+                        WriteToLog("-> There was a problem with the result value. Please try the test again");
+                        return false;
+                    }
+        }
+
+        public bool GetResultData()
+        {
+            PECommunication port = new PECommunication(portNumber);
+            //port.SerialMessageReceived += OnSerialMessageReceived;
+            openPort(port);
+            WriteToLog("Starting curl test...");
+
+            var success = port.Measure();
+            if (success)
             {
-                if (resultValue < testSet.limits.Fail ||
-                    resultValue > testSet.limits.Pass
-                    )
-                {
-                    fiber.results.curlResults.ISEresult = "F";
-                    fiber.results.curlResults.ISEtestcode = fiber.results.curlResults.ISEtestcode == "RM" ? "FF" : "RM";
-                }
-                else
-                {
-                    fiber.results.curlResults.ISEresult = "P";
-                    fiber.results.curlResults.ISEtestcode = "PP";
-                }
-                fiber.results.lastTestResult = fiber.results.curlResults.ISEresult;
+                var value = port.ReadResult();
+                string processedValue = ProcessPEReturn(value);
+                fiber.results.curlResults.ISEradius = processedValue;
+                WriteToLog(string.Format("Test complete with radius: {0}m", processedValue));
+                radiusResultLabel.Text = processedValue;
+                calculateOffsetForPTS(fiber.results.curlResults.ISEradius);
                 return true;
             }
             else
             {
-                WriteToLog("-> There was a problem with your entry. Please try the test again");
+                WriteToLog("Curl test failed");
                 return false;
             }
         }
 
-        public void GetResultData()
-        {
-            PECommunication port = new PECommunication(portNumber);
-            openPort(port);
-            WriteToLog("Starting curl test...");
-            string value = port.runCurl();
-            string processedValue = "";
-            ProcessPEReturn(value, out processedValue);
-            fiber.results.curlResults.ISEradius = processedValue;
-            WriteToLog(string.Format("Test complete with radius: {0}m", processedValue));
-            calculateOffsetForPTS(fiber.results.curlResults.ISEradius);
-        }
 
-        private bool ProcessPEReturn(string inVal, out string outVal)
+
+        private string ProcessPEReturn(string inVal)
         {
-            outVal = inVal.Substring(0, inVal.Length-1);
+            string outVal = inVal.Substring(0, inVal.Length-1);
 
             if (outVal.Contains("FAIL"))
             {
                 outVal = "The test did not complete properly";
-                return false;
             }
 
-            return true;
+            return outVal;
         }
 
         private bool openPort(PECommunication port)
@@ -354,10 +381,10 @@ namespace CURL500Test
             noButton.Visible = true;
         }
 
-        private void yesButton_Click(object sender, EventArgs e)
+        private async void yesButton_Click(object sender, EventArgs e)
         {
             //yesButton.Enabled = false;
-            RunTest();
+            await RunTest();
         }
 
         /// <summary>
@@ -397,7 +424,19 @@ namespace CURL500Test
 
         public void OnPTSMessageSending(object source, EventArgs args)
         {
+            loadingCircle.LoadingCircleControl.Active = true;
             curlStatusLabel.Text = "Communicating with PTS...";
+        }
+
+        private void OnPTSMessageReceived(object source, EventArgs args)
+        {
+            if(!this.IsDisposed)
+            loadingCircle.LoadingCircleControl.Active = false;
+        }
+
+        private void OnSerialMessageReceived(object source, PECommunicationEventArgs args)
+        {
+            WriteToLog(args.response);
         }
 
         private void noButton_Click(object sender, EventArgs e)
@@ -414,9 +453,10 @@ namespace CURL500Test
             WriteToLog("Enter radius result manually from PE application", true);
         }
 
-        private void okButton_Click(object sender, EventArgs e)
+        private async void okButton_Click(object sender, EventArgs e)
         {
-            RunTest();
+            okButton.Visible = false;
+            await RunTest();
         }
     }
 }
