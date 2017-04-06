@@ -46,7 +46,6 @@
             this.logTab = new System.Windows.Forms.TabPage();
             this.resultsBox = new System.Windows.Forms.TabPage();
             this.resultsTextBox = new System.Windows.Forms.TextBox();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.loadingCircle = new MRG.Controls.UI.LoadingCircleToolStripMenuItem();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -93,6 +92,8 @@
             // 
             // testListDataGrid
             // 
+            this.testListDataGrid.AllowUserToAddRows = false;
+            this.testListDataGrid.AllowUserToDeleteRows = false;
             this.testListDataGrid.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.testListDataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -115,7 +116,7 @@
             dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.testListDataGrid.DefaultCellStyle = dataGridViewCellStyle8;
-            this.testListDataGrid.Location = new System.Drawing.Point(401, 42);
+            this.testListDataGrid.Location = new System.Drawing.Point(450, 61);
             this.testListDataGrid.Name = "testListDataGrid";
             dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
@@ -125,7 +126,7 @@
             dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.testListDataGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
-            this.testListDataGrid.Size = new System.Drawing.Size(263, 570);
+            this.testListDataGrid.Size = new System.Drawing.Size(264, 562);
             this.testListDataGrid.TabIndex = 2;
             // 
             // fiberIdLabel
@@ -150,9 +151,10 @@
             // 
             // testListLabel
             // 
+            this.testListLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.testListLabel.AutoSize = true;
             this.testListLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.testListLabel.Location = new System.Drawing.Point(396, 5);
+            this.testListLabel.Location = new System.Drawing.Point(446, 34);
             this.testListLabel.Name = "testListLabel";
             this.testListLabel.Size = new System.Drawing.Size(78, 24);
             this.testListLabel.TabIndex = 5;
@@ -160,7 +162,9 @@
             // 
             // mainLogTextBox
             // 
-            this.mainLogTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.mainLogTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.mainLogTextBox.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.mainLogTextBox.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.mainLogTextBox.Location = new System.Drawing.Point(0, 6);
@@ -194,6 +198,9 @@
             // 
             // tabControl
             // 
+            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl.CausesValidation = false;
             this.tabControl.Controls.Add(this.msgTab);
             this.tabControl.Controls.Add(this.logTab);
@@ -201,7 +208,7 @@
             this.tabControl.Location = new System.Drawing.Point(12, 295);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(383, 304);
+            this.tabControl.Size = new System.Drawing.Size(423, 315);
             this.tabControl.TabIndex = 9;
             // 
             // msgTab
@@ -210,7 +217,7 @@
             this.msgTab.Location = new System.Drawing.Point(4, 22);
             this.msgTab.Name = "msgTab";
             this.msgTab.Padding = new System.Windows.Forms.Padding(3);
-            this.msgTab.Size = new System.Drawing.Size(375, 278);
+            this.msgTab.Size = new System.Drawing.Size(371, 289);
             this.msgTab.TabIndex = 0;
             this.msgTab.Text = "Message";
             this.msgTab.UseVisualStyleBackColor = true;
@@ -225,7 +232,7 @@
             this.operatorMessageBox.Location = new System.Drawing.Point(0, 0);
             this.operatorMessageBox.Multiline = true;
             this.operatorMessageBox.Name = "operatorMessageBox";
-            this.operatorMessageBox.Size = new System.Drawing.Size(375, 278);
+            this.operatorMessageBox.Size = new System.Drawing.Size(376, 289);
             this.operatorMessageBox.TabIndex = 0;
             // 
             // logTab
@@ -234,7 +241,7 @@
             this.logTab.Location = new System.Drawing.Point(4, 22);
             this.logTab.Name = "logTab";
             this.logTab.Padding = new System.Windows.Forms.Padding(3);
-            this.logTab.Size = new System.Drawing.Size(375, 278);
+            this.logTab.Size = new System.Drawing.Size(371, 289);
             this.logTab.TabIndex = 1;
             this.logTab.Text = "Log";
             this.logTab.UseVisualStyleBackColor = true;
@@ -246,18 +253,21 @@
             this.resultsBox.Location = new System.Drawing.Point(4, 22);
             this.resultsBox.Name = "resultsBox";
             this.resultsBox.Padding = new System.Windows.Forms.Padding(3);
-            this.resultsBox.Size = new System.Drawing.Size(375, 278);
+            this.resultsBox.Size = new System.Drawing.Size(415, 289);
             this.resultsBox.TabIndex = 2;
             this.resultsBox.Text = "Results";
             this.resultsBox.UseVisualStyleBackColor = true;
             // 
             // resultsTextBox
             // 
+            this.resultsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.resultsTextBox.Location = new System.Drawing.Point(0, 0);
             this.resultsTextBox.Multiline = true;
             this.resultsTextBox.Name = "resultsTextBox";
             this.resultsTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.resultsTextBox.Size = new System.Drawing.Size(375, 269);
+            this.resultsTextBox.Size = new System.Drawing.Size(415, 286);
             this.resultsTextBox.TabIndex = 0;
             // 
             // statusStrip1
@@ -265,9 +275,9 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.loadingCircle,
             this.statusLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 602);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 613);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(676, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(726, 22);
             this.statusStrip1.TabIndex = 11;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -306,7 +316,7 @@
             this.menu});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(676, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(726, 24);
             this.menuStrip1.TabIndex = 12;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -402,7 +412,8 @@
             this.AcceptButton = this.submitButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(676, 624);
+            this.ClientSize = new System.Drawing.Size(726, 635);
+            this.Controls.Add(this.testListDataGrid);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.tabControl);
@@ -411,7 +422,6 @@
             this.Controls.Add(this.testListLabel);
             this.Controls.Add(this.serialIdLabel);
             this.Controls.Add(this.fiberIdLabel);
-            this.Controls.Add(this.testListDataGrid);
             this.Controls.Add(this.serialIdTextBox);
             this.Controls.Add(this.fiberIdTextBox);
             this.MainMenuStrip = this.menuStrip1;
@@ -452,7 +462,6 @@
         private System.Windows.Forms.TextBox operatorMessageBox;
         private System.Windows.Forms.TabPage resultsBox;
         private System.Windows.Forms.TextBox resultsTextBox;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private MRG.Controls.UI.LoadingCircleToolStripMenuItem loadingCircle;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;

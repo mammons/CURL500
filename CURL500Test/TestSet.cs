@@ -9,6 +9,7 @@ namespace CURL500Test
     {
         public Operator oper { get; set; }
         public TestSetLimits limits { get; set; }
+        public PECommunication port { get; set; }
         public string name { get; set; }
         public string workstation { get; set; }
         public string number { get; set; }
@@ -16,7 +17,7 @@ namespace CURL500Test
         public bool isAvailable { get; set; }
         public string testName { get; set; }
         public string sessionInfo { get; set; } = "No session Info.";
-        public string portNumber { get; set; } = "COM1";
+        public string portNumber { get; set; } = "COM4";
 
 
         public TestSet()
@@ -52,6 +53,22 @@ namespace CURL500Test
                 default:
                     break;
             }
+        }
+
+        public bool ManagePorts()
+        {
+            if(port == null)
+            {
+                port = new PECommunication(portNumber);
+                return port.open();
+            }
+            if (port != null && portNumber != port.CurrentPort())
+            {
+                port.close();
+                port = new PECommunication(portNumber);
+                return port.open();
+            }
+            return port.isOpen();
         }
 
     }

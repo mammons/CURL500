@@ -60,6 +60,7 @@ namespace CURL500Test
             }
             catch(Exception ex)
             {
+                loginStatusLabel.Text = "No response from PTS. Check network connection";
                 logger.Error(ex);
             }
         }

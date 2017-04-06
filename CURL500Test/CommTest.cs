@@ -9,153 +9,168 @@ using System.Windows.Forms;
 using DevLib.IO;
 using DevLib.IO.Ports;
 using System.IO.Ports;
+using NLog;
 
 namespace CURL500Test
 {
 
-        public partial class CommTest : Form
-        {
-            static string portName = "COM1";
-            static int baudRate = 9600;
-            static Parity parity = Parity.None;
-            static int dataBits = 8;
-            static StopBits stopBits = StopBits.One;
+    public partial class CommTest : Form
+    {
+        static string portName = "COM1";
+        static int baudRate = 9600;
+        static Parity parity = Parity.None;
+        static int dataBits = 8;
+        static StopBits stopBits = StopBits.One;
 
-            //static bool waitTimeout = false;
-            static int timeout = 20000;
-            static bool throwOnError = true;
-            byte[] response;
+        string response;
 
-            static Timer r = new System.Windows.Forms.Timer();
-        
+        TestSet tSet;
 
+        //static bool waitTimeout = false;
+        //static int timeout = 10000;
+        //static bool throwOnError = true;
 
+        static Timer r = new System.Windows.Forms.Timer();
 
+        Logger logger = LogManager.GetCurrentClassLogger();
 
         SyncSerialPort port;
-        PECommunication myPort;       
+        
 
-
-
-
-            //SerialPort port = new SerialPort(portName, baudRate,parity, dataBits, stopBits);
-
-
-            //PortCommunication commPort = new PortCommunication();
-            public CommTest()
-            {
-                //port.DataReceived += new SerialDataReceivedEventHandler(port_DataReceived);
-                InitializeComponent();
-                port = new SyncSerialPort(portName, baudRate, parity, dataBits, stopBits);
-            myPort = new PECommunication(portName);
+        public CommTest()
+        {
+            InitializeComponent();
+            port = new SyncSerialPort(portName, baudRate, parity, dataBits, stopBits);
             if (port.Open())
-                {
-                    tb.AppendText(string.Format("Port: {0} open\n", portName));
-                }
-                else
-                {
-                    tb.AppendText(string.Format("Port failed to open with ex: {0}" + System.Environment.NewLine));
-                    return;
-                }
-
+            {
+                WriteToLog(string.Format("Port: {0} open\n", portName));
             }
+            else
+            {
+                WriteToLog(string.Format("Port failed to open with ex: {0}" + System.Environment.NewLine));
+                return;
+            }
+
+        }
 
         public CommTest(string newPort)
         {
-            //port.DataReceived += new SerialDataReceivedEventHandler(port_DataReceived);
             InitializeComponent();
             portName = newPort;
             port = new SyncSerialPort(portName, baudRate, parity, dataBits, stopBits);
-            myPort = new PECommunication(portName);
             try
             {
                 if (port.Open())
                 {
-                    tb.AppendText(string.Format("Port: {0} open\n", portName));
+                    WriteToLog(string.Format("Port: {0} open\n", portName));
                 }
                 else
                 {
 
-                    tb.AppendText(string.Format("Failed to open port {0} ", portName));
+                    WriteToLog(string.Format("Failed to open port {0} ", portName));
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                tb.AppendText(string.Format("Port failed to open with ex: {0}" + System.Environment.NewLine, ex.Message));
+                WriteToLog(string.Format("Port failed to open with ex: {0}" + System.Environment.NewLine, ex.Message));
             }
+        }
 
-
+        public CommTest(TestSet tSet, string newPort)
+        {
+            InitializeComponent();
+            this.tSet = tSet;
+            tSet.portNumber = newPort;
+            tSet.ManagePorts();
+            
+            try
+            {
+                if (tSet.port.isOpen())
+                {
+                    WriteToLog(string.Format("Port: {0} open\n", tSet.portNumber));
+                }
+                else
+                {
+                    WriteToLog(string.Format("Failed to open port {0} ", tSet.portNumber));
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteToLog(string.Format("Port failed to open with ex: {0}" + System.Environment.NewLine, ex.Message));
+            }
         }
 
         private void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            try
             {
-                try
-                {
-                    //tb.AppendText(port.ReadExisting());
-                }
-                catch (Exception ex)
-                {
-                    tb.AppendText(ex.Message + System.Environment.NewLine);
-                }
+                //WriteToLog(port.ReadExisting());
             }
-
-            private void sendBtn_Click(object sender, EventArgs e)
+            catch (Exception ex)
             {
-            sendCom(command.Text);
+                WriteToLog(ex.Message + System.Environment.NewLine);
             }
-
-        private void readBtn_Click(object sender, EventArgs e)
-        {
-            response = port.ReadSync(false, timeout, throwOnError);
-            tb.AppendText("ReadSync " + Encoding.ASCII.GetString(response));
         }
 
-        private void measureBtn_Click(object sender, EventArgs e)
+        private async void sendBtn_Click(object sender, EventArgs e)
         {
-            sendCom("MEASURE");
+            WriteToLog("Sending command " + command.Text);
+            response = await tSet.port.sendCommand(command.Text);
+            WriteToLog("Response: " + response);
         }
 
-        private void statusBtn_Click(object sender, EventArgs e)
+        private async void readBtn_Click(object sender, EventArgs e)
         {
-           sendCom("STATUS");
+            WriteToLog("Reading data on port...");
+            response = await tSet.port.ReadPort();
+            WriteToLog("Response: " + response);
         }
 
-        public void sendCom(string command)
+        private async void measureBtn_Click(object sender, EventArgs e)
         {
-            byte[] cmd = Encoding.ASCII.GetBytes(command + System.Environment.NewLine);
-
-            tb.AppendText(string.Format("sending command: ----- {0}\r\n", command));
-            response = port.SendSync(cmd, false, timeout, throwOnError);
-
-            tb.AppendText("SendSync " + Encoding.ASCII.GetString(response) + Environment.NewLine);
-
-            if (command == "MEASURE")
-            {
-                response = port.ReadSync(false, timeout, throwOnError);
-                tb.AppendText("ReadSync " + Encoding.ASCII.GetString(response) + Environment.NewLine);
-            }
-
-            tb.AppendText(string.Format("-------------complete------------------" + Environment.NewLine));
-
+            WriteToLog("Sending command MEASURE");
+            response = await tSet.port.Measure();
+            WriteToLog("Response" + response);
         }
 
-        private void readResultBtn_Click(object sender, EventArgs e)
+        private async void statusBtn_Click(object sender, EventArgs e)
         {
-            sendCom("READ RESULTS");
+            WriteToLog("Sending command STATUS");
+            response = await tSet.port.CheckStatus();
+            WriteToLog("Response" + response);
+        }
+
+        private async void readResultBtn_Click(object sender, EventArgs e)
+        {
+            WriteToLog("Sending command READ RESULTS");
+            response = await tSet.port.ReadResult();
+            WriteToLog("Response: " + response);
+        }
+
+        private void openPortBtn_Click(object sender, EventArgs e)
+        {
+            WriteToLog("Trying to open port");
+            response = tSet.port.open() ? "Port Open" : "Port failed to open";
+            WriteToLog("Response: " + response);
+        }
+
+        public void WriteToLog(string str)
+        {
+            tb.AppendText(str + Environment.NewLine);
         }
     }
 
 
 
     class PortCommunication
+    {
+
+
+        public PortCommunication()
         {
 
-
-            public PortCommunication()
-            {
-
-            }
-
-
         }
+
+
     }
+}

@@ -1,12 +1,9 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -33,7 +30,7 @@ namespace CURL500Test
         private string prodbeforeFile = AppDomain.CurrentDomain.BaseDirectory + "FiberData.ini";
         private string prodafterFile = AppDomain.CurrentDomain.BaseDirectory + "ResultData.ini";
         private string path = @"C:\CURL400\results";
-        private string portNumber;
+        //private string portNumber;
 
 
 
@@ -42,12 +39,11 @@ namespace CURL500Test
         {
             this.fiber = fiber;
             this.testSet = testSet;
-            this.portNumber = testSet.portNumber;
             InitializeComponent();
-            BeginTest();
+            SetupTest();
         }
 
-        public void BeginTest()
+        public void SetupTest()
         {
             yesButton.Visible = false;
             noButton.Visible = false;
@@ -61,7 +57,9 @@ namespace CURL500Test
             statusResultLabel.BackColor = Form.DefaultBackColor;
             statusResultLabel.TextChanged += statusResultLabel_TextChanged;
             WriteToLog(string.Format("-> Load {0} fiber sample", fiber.fiberId.Trim()));
-            WriteToStatus("Waiting for curl test to complete"); 
+            WriteToStatus("Waiting for curl test to complete");
+            testSet.port.SerialMessageSending += OnSerialMessageSending;
+            testSet.port.SerialMessageReceived += OnSerialMessageReceived;
         }
 
         /// <summary>
@@ -218,7 +216,7 @@ namespace CURL500Test
                             fiber.referenceTries++;
                             if (fiber.referenceTries > 3) WriteToLog("The reference fiber is failing, contact engineering");
                         }
-                        BeginTest();
+                        SetupTest();
                         return;
                     }
                     this.Close();
@@ -230,14 +228,13 @@ namespace CURL500Test
             }
             else
             {
-                BeginTest();
+                SetupTest();
                 return;
             }
         }
 
         private async Task SendCurlResultToPTS()
         {
-            //List<string> newPTSReturn = new List<string>();
             PTStransaction pts = new PTStransaction();
             pts.PTSMessageSending += OnPTSMessageSending;
             pts.PTSMessageReceived += OnPTSMessageReceived;
@@ -287,28 +284,68 @@ namespace CURL500Test
 
         public async Task<bool> GetResultData()
         {
-            PECommunication port = new PECommunication(portNumber);
-            port.SerialMessageReceived += OnSerialMessageReceived;
-            port.SerialMessageSending += OnSerialMessageSending;
-            openPort(port);
-            WriteToLog("Starting curl test...");
+            //testSet.ManagePorts();
+            WriteToLog("Testing curl...");
+            logger.Debug("Testing curl on {0}", testSet.portNumber);
 
-            var success = await port.MeasureCurl();
-            if (success)
+            var measStatus = await testSet.port.Measure();
+            if (measStatus.Contains("OK"))
             {
-                var value = await port.ReadResult();
-                string processedValue = ProcessPEReturn(value);
-                fiber.results.curlResults.ISEradius = processedValue;
-                WriteToLog(string.Format("Test complete with radius: {0}m", processedValue));
-                radiusResultLabel.Text = processedValue;
-                calculateOffsetForPTS(fiber.results.curlResults.ISEradius);
-                return true;
+                int setStatus = -1;
+                while(setStatus != 2 || setStatus == 12)
+                {
+                    int.TryParse(ProcessPEReturn(await testSet.port.CheckStatus()), out setStatus);
+                }
+                if (setStatus == 2) //From PE set means Measurement finished. Results in memory.
+                {
+                   return await ProcessResultData();
+                }
+                else
+                {
+                    DisplayErrorMessage(setStatus);
+                    return false;
+                }                
             }
             else
             {
-                WriteToLog("Curl test failed");
+                WriteToLog("Curl test failed. Try remeasuring.");
+                okButton.Visible = true;
                 return false;
             }
+        }
+
+        private void DisplayErrorMessage(int setStatus)
+        {
+            switch (setStatus)
+            {
+                case (0):
+                    WriteToLog("System ready no results in memory");
+                    break;
+                case (12):
+                    WriteToLog("Measurement aborted, or error. No valid data");
+                    break;
+                default:
+                    WriteToLog("Problem with set not returning value. Try restarting");
+                    break;
+            }
+        }
+
+        private async Task<bool> ProcessResultData()
+        {
+            WriteToLog("Test finished. Retrieving result.");
+            var value = await testSet.port.ReadResult();
+            var errors = ProcessPEReturn(await testSet.port.CheckForTestErrors());
+            string processedValue = ProcessPEReturn(value);
+            int errorNumber = -1;
+            int.TryParse(errors, out errorNumber);
+
+            fiber.results.curlResults.ISEradius = processedValue;
+            fiber.results.curlResults.successful = errorNumber < 50;
+            WriteToLog(string.Format("Test complete with radius: {0}m", processedValue));
+            radiusResultLabel.Text = processedValue;
+            statusResultLabel.Text = fiber.results.curlResults.successful ? "Successful" : "Failed";
+            calculateOffsetForPTS(fiber.results.curlResults.ISEradius);
+            return true;
         }
 
         private string ProcessPEReturn(string inVal)
@@ -320,7 +357,7 @@ namespace CURL500Test
             {
                 outVal = "The test did not complete properly";
             }
-
+            outVal = outVal.TrimEnd('\r', '\n', ' ');
             return outVal;
         }
 
@@ -365,6 +402,13 @@ namespace CURL500Test
             }
         }
 
+
+        private void CheckSetStatus()
+        {
+            throw new NotImplementedException();
+        }
+
+
         private void statusResultLabel_TextChanged(object sender, EventArgs e)
         {
             statusResultLabel.BackColor = fiber.results.curlResults.successful ? Color.LawnGreen : Color.IndianRed;
@@ -373,7 +417,7 @@ namespace CURL500Test
                 DialogResult remeas = MessageBox.Show("The PE set reported that the test was unsuccessful. Try cleaning the fiber and measuring again.", "Unsuccessful Test", MessageBoxButtons.OKCancel);
                 if (remeas == DialogResult.OK)
                 {
-                    BeginTest();
+                    SetupTest();
                     return;
                 }
                 else
@@ -381,9 +425,6 @@ namespace CURL500Test
                     Close();
                 }
             }
-            WriteToLog("Do these results match the PE application results?", true);
-            yesButton.Visible = true;
-            noButton.Visible = true;
         }
 
         private async void yesButton_Click(object sender, EventArgs e)
@@ -435,18 +476,21 @@ namespace CURL500Test
 
         private void OnPTSMessageReceived(object source, EventArgs args)
         {
-            if(!this.IsDisposed)
+            if(!loadingCircle.IsDisposed)
             loadingCircle.LoadingCircleControl.Active = false;
         }
 
         private void OnSerialMessageReceived(object source, PECommunicationEventArgs args)
         {
-            loadingCircle.LoadingCircleControl.Active = false;
-            WriteToLog(args.response);
+
+                logger.Debug("Serial message received: " + args.response);
+                loadingCircle.LoadingCircleControl.Active = false;
+                //WriteToLog(args.response);
         }
 
         private void OnSerialMessageSending(object source, EventArgs args)
         {
+            logger.Debug("Serial message sending event raised");
             loadingCircle.LoadingCircleControl.Active = true;
         }
 

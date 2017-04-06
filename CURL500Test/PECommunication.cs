@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO.Ports;
-using DevLib.IO;
 using DevLib.IO.Ports;
 using System.Threading.Tasks;
+using NLog;
 
 namespace CURL500Test
 {
@@ -17,12 +15,12 @@ namespace CURL500Test
         static int dataBits = 8;
         static StopBits stopBits = StopBits.One;
 
-        static bool waitTimeout = true;
+        static bool waitTimeout = false;
         static int timeout = 10000;
         static bool throwOnError = true;
         static byte[] response;
 
-        SyncSerialPort port = new SyncSerialPort(portName, baudRate, parity, dataBits, stopBits);
+        private SyncSerialPort port;
 
         public delegate void SerialMessageSendingEventHandler(object source, EventArgs args);
         public event SerialMessageSendingEventHandler SerialMessageSending;
@@ -33,19 +31,32 @@ namespace CURL500Test
         //public delegate void SerialMessageErrorEventHandler(object source, EventArgs args);
         //public event SerialMessageErrorEventHandler ErrorReceived;
 
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
         public PECommunication()
         {
-            
+            port = new SyncSerialPort(portName, baudRate, parity, dataBits, stopBits);
         }
 
-        public PECommunication(string port)
+        public PECommunication(string newPortName)
         {
-            portName = port;
+            portName = newPortName;
+            port = new SyncSerialPort(portName, baudRate, parity, dataBits, stopBits);
         }
 
         public bool open()
         {
             return port.Open();
+        }
+
+        public bool close()
+        {
+            return port.Close();
+        }
+
+        public bool isOpen()
+        {
+            return port.IsOpen;
         }
 
         /// <summary>
@@ -63,6 +74,7 @@ namespace CURL500Test
                 try
                 {
                     OnSerialMessageSending();
+                    logger.Debug("Sending command {0}", command);
                     response = await TaskEx.Run(() =>
                         port.SendSync(cmd, waitTimeout, timeout, throwOnError));
                 }
@@ -76,17 +88,10 @@ namespace CURL500Test
             return "Port not open";
         }
 
-        public async Task<bool> MeasureCurl()
+        public async Task<string> Measure()
         {
-            string response = await sendCommand("MEASURE");
-            if (response.Contains("OK"))
-            {
-                OnSerialMessageSending();
-                response = Encoding.ASCII.GetString(port.ReadSync(false, timeout, throwOnError));
-                OnSerialMessageReceived();
-                return response.Contains("FINISHED");
-            }
-            return false;
+            return await sendCommand("MEASURE");
+            
         }
 
         public async Task<string> ReadResult()
@@ -94,26 +99,49 @@ namespace CURL500Test
             return await sendCommand("READ RESULTS");
         }
 
+        public async Task<string> CheckStatus()
+        {
+            return await sendCommand("STATUS");
+        }
+
+        public async Task<string> CheckForTestErrors()
+        {
+            return await sendCommand("READ CURL_ERRORS");
+        }
+
+        public async Task<string> ReadPort()
+        {
+            response = await TaskEx.Run(() =>
+                   port.ReadSync(waitTimeout, timeout, throwOnError));
+            return Encoding.ASCII.GetString(response);
+        }
+
+        public string CurrentPort()
+        {
+            return port.CurrentPort;
+        }
+
         protected virtual void OnSerialMessageSending()
         {
-            if (SerialMessageSending != null)
-                SerialMessageSending(this, EventArgs.Empty);
+            logger.Debug("OnSerialMessageSending ");
+            SerialMessageSending?.Invoke(this, EventArgs.Empty);
         }
 
         protected virtual void OnSerialMessageReceived()
         {
             string strResponse = Encoding.ASCII.GetString(response);
-            if (SerialMessageReceived != null)
-                SerialMessageReceived(this, new PECommunicationEventArgs(strResponse));
+            SerialMessageReceived?.Invoke(this, new PECommunicationEventArgs(strResponse));
         }
 
-        public void OnErrorReceived(object source, EventArgs args)
+        private void OnErrorReceived(object source, EventArgs args)
         {
+            logger.Debug("OnErrorReceived sent me");
             OnSerialMessageReceived();
         }
 
-        public void OnDataReceived(object source, EventArgs args)
+        private void OnDataReceived(object source, EventArgs args)
         {
+            logger.Debug("OnDataReceived sent me");
             OnSerialMessageReceived();
         }
 

@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.Threading;
-using System.Deployment.Application;
 using ObjectDumper;
 using System.Threading.Tasks;
-using NLog.Targets;
 using NLog;
 
 namespace CURL500Test
@@ -194,9 +189,8 @@ namespace CURL500Test
             if (oper.loggedIn)
             {
                 updateTextBar();
-                //WriteToOperator(string.Format("Welcome, {0}", oper.name), messageType.NORMAL);
-                //WriteToStatus(string.Format("Operator {0} logged in", oper.name));
-                logger.Info("Welcome, {0}", oper.name);
+                WriteToOperator(string.Format("Welcome, {0}", oper.name), messageType.NORMAL);
+                WriteToStatus(string.Format("Operator {0} logged in", oper.name));
             }
             else
             {
@@ -222,6 +216,7 @@ namespace CURL500Test
             {
                 testSet = new TestSet(testArgs.testSetName, testArgs.workstation, testArgs.testSetNumber);
                 updateTextBar();
+                testSet.ManagePorts();
             }
         }
 
@@ -263,13 +258,12 @@ namespace CURL500Test
                     break;
             }
             operatorMessageBox.Text = v;
-            //WriteToLog(v);
             logger.Info(v);
         }
         private void WriteToResultsBox(string str)
         {
-            this.resultsTextBox.AppendText(str);
-            logger.Info(testSet.sessionInfo, (ObjectDumperExtensions.DumpToString(fiber.results, "Detail Results")));
+            resultsTextBox.AppendText(str + Environment.NewLine);
+            logger.Info(testSet.sessionInfo + Environment.NewLine + (ObjectDumperExtensions.DumpToString(fiber.results, "Detail Results for " + fiber.fiberId)));
         }
 
         private void WriteToStatus(string str)
@@ -459,12 +453,13 @@ namespace CURL500Test
         }
         private void testCOM_Click(object sender, EventArgs e)
         {
-            new CommTest(testSet.portNumber).ShowDialog();
+            new CommTest(testSet, testSet.portNumber).ShowDialog();
         }
 
         private void COMToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             testSet.portNumber = e.ClickedItem.Text;
+            testSet.ManagePorts();
             UpdateCOMMenuItems(e.ClickedItem);
         }
 
@@ -495,6 +490,16 @@ namespace CURL500Test
                 else
                     tempItemp.Checked = false;
             }
+        }
+
+        private void DEVToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Configuration.ConfigurationManager.AppSettings["Server"] = "DEV";
+        }
+
+        private void PRODToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Configuration.ConfigurationManager.AppSettings["Server"] = "PROD";
         }
     }
 }
