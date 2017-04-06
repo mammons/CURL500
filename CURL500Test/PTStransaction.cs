@@ -12,8 +12,8 @@ namespace CURL500Test
         //public string responseMessage { get; set; }
         public List<string> responseList { get; set; }
         public string serverUri { get; set; }
-        public string developmentUri = "http://devpts.ganor.ofsoptics.com";
-        public string productionUri = "http://pts.ganor.ofsoptics.com";
+        public string developmentUri = System.Configuration.ConfigurationManager.AppSettings["devURI"];
+        public string productionUri = System.Configuration.ConfigurationManager.AppSettings["prodURI"];
 
         public delegate void PTSMessageSendingEventHandler(object source, EventArgs args);
         public event PTSMessageSendingEventHandler PTSMessageSending;
