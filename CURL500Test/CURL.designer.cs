@@ -40,6 +40,7 @@
             this.curlStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.radiusEntryTextbox = new System.Windows.Forms.TextBox();
             this.okButton = new System.Windows.Forms.Button();
+            this.closeBtn = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,6 +66,7 @@
             this.yesButton.TabIndex = 1;
             this.yesButton.Text = "Yes";
             this.yesButton.UseVisualStyleBackColor = true;
+            this.yesButton.Visible = false;
             this.yesButton.Click += new System.EventHandler(this.yesButton_Click);
             // 
             // label1
@@ -182,12 +184,24 @@
             this.okButton.Visible = false;
             this.okButton.Click += new System.EventHandler(this.okButton_Click);
             // 
+            // closeBtn
+            // 
+            this.closeBtn.Location = new System.Drawing.Point(167, 385);
+            this.closeBtn.Name = "closeBtn";
+            this.closeBtn.Size = new System.Drawing.Size(75, 23);
+            this.closeBtn.TabIndex = 12;
+            this.closeBtn.Text = "Close";
+            this.closeBtn.UseVisualStyleBackColor = true;
+            this.closeBtn.Visible = false;
+            this.closeBtn.Click += new System.EventHandler(this.closeBtn_Click);
+            // 
             // CURL
             // 
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(458, 443);
+            this.Controls.Add(this.closeBtn);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.noButton);
@@ -221,5 +235,6 @@
         private MRG.Controls.UI.LoadingCircleToolStripMenuItem loadingCircle;
         private System.Windows.Forms.TextBox radiusEntryTextbox;
         private System.Windows.Forms.Button okButton;
+        private System.Windows.Forms.Button closeBtn;
     }
 }

@@ -22,10 +22,10 @@ namespace CURL500Test
 
         private SyncSerialPort port;
 
-        public delegate void SerialMessageSendingEventHandler(object source, EventArgs args);
+        public delegate void SerialMessageSendingEventHandler(object sender, EventArgs e);
         public event SerialMessageSendingEventHandler SerialMessageSending;
 
-        public delegate void SerialMessageReceivedEventHandler(object source, PECommunicationEventArgs args);
+        public delegate void SerialMessageReceivedEventHandler(object sender, PECommunicationEventArgs e);
         public event SerialMessageReceivedEventHandler SerialMessageReceived;
 
         //public delegate void SerialMessageErrorEventHandler(object source, EventArgs args);
@@ -107,6 +107,17 @@ namespace CURL500Test
         public async Task<string> CheckForTestErrors()
         {
             return await sendCommand("READ CURL_ERRORS");
+        }
+
+        public async Task<string> SendID(string Id)
+        {
+            return await sendCommand(string.Format("SET ID {0}", Id));
+        }
+
+        public async Task<bool> CheckConnected()
+        {
+            string connected = await sendCommand("READ CONNECTED");
+            return connected.Contains("1");
         }
 
         public async Task<string> ReadPort()

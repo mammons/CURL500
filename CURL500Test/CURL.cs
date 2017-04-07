@@ -43,23 +43,32 @@ namespace CURL500Test
             SetupTest();
         }
 
-        public void SetupTest()
+        public async Task SetupTest()
         {
-            yesButton.Visible = false;
-            noButton.Visible = false;
-            okButton.Visible = true;
-            radiusEntryTextbox.Visible = false;
-            radiusResultLabel.Visible = true;
-            radiusResultLabel.Text = "Waiting...";
-            statusResultLabel.TextChanged -= statusResultLabel_TextChanged;
-            staticStatusLabel.Visible = true;
-            statusResultLabel.Text = "Waiting...";
-            statusResultLabel.BackColor = Form.DefaultBackColor;
-            statusResultLabel.TextChanged += statusResultLabel_TextChanged;
-            WriteToLog(string.Format("-> Load {0} fiber sample", fiber.fiberId.Trim()));
-            WriteToStatus("Waiting for curl test to complete");
-            testSet.port.SerialMessageSending += OnSerialMessageSending;
-            testSet.port.SerialMessageReceived += OnSerialMessageReceived;
+            if (await testSet.port.CheckConnected())
+            {
+                yesButton.Visible = false;
+                noButton.Visible = false;
+                okButton.Visible = true;
+                radiusEntryTextbox.Visible = false;
+                radiusResultLabel.Visible = true;
+                radiusResultLabel.Text = "Waiting...";
+                statusResultLabel.TextChanged -= statusResultLabel_TextChanged;
+                staticStatusLabel.Visible = true;
+                statusResultLabel.Text = "Waiting...";
+                statusResultLabel.BackColor = Form.DefaultBackColor;
+                statusResultLabel.TextChanged += statusResultLabel_TextChanged;
+                WriteToLog(string.Format("-> Load {0} fiber sample", fiber.fiberId.Trim()));
+                WriteToStatus("Waiting for curl test to complete");
+                testSet.port.SerialMessageSending += OnSerialMessageSending;
+                testSet.port.SerialMessageReceived += OnSerialMessageReceived;
+            }
+            else
+            {
+                WriteToLog("Test set not communicating. Check that the test set is connected and that you are using the correct COM port.");
+                closeBtn.Visible = true;
+                closeBtn.Focus();
+            }
         }
 
         /// <summary>
@@ -201,6 +210,10 @@ namespace CURL500Test
 
         private async Task RunTest()
         {
+            if(await SendFiberData(fiber.fiberId))
+            {
+                WriteToLog("Fiber ID sent to test set");
+            }
             var gotResults = await GetResultData();
             if(!gotResults) return;
             if (EvaluateResultData())
@@ -284,7 +297,6 @@ namespace CURL500Test
 
         public async Task<bool> GetResultData()
         {
-            //testSet.ManagePorts();
             WriteToLog("Testing curl...");
             logger.Debug("Testing curl on {0}", testSet.portNumber);
 
@@ -312,6 +324,12 @@ namespace CURL500Test
                 okButton.Visible = true;
                 return false;
             }
+        }
+
+        public async Task<bool> SendFiberData(string fiberId)
+        {
+            string response = await testSet.port.SendID(fiberId);
+            return response.Contains("OK");
         }
 
         private void DisplayErrorMessage(int setStatus)
@@ -512,6 +530,11 @@ namespace CURL500Test
         {
             okButton.Visible = false;
             await RunTest();
+        }
+
+        private void closeBtn_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

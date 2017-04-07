@@ -112,9 +112,18 @@ namespace CURL500Test
                 msgtype = messageType.FAILED;
             }
             string logMsg = string.Format("Test Result: Offset(PTS Value):{0}um Radius:{1}m Pass/Fail: {2}", fiber.results.curlResults.ISEvalue.ToString("000.0"), fiber.results.curlResults.ISEradius, fiber.results.curlResults.ISEresult);
-            WriteToOperator(string.Format("Fiber {0}{1}", fiber.fiberId, displayText), msgtype);
-            WriteToLog(logMsg);
-            WriteToResultsBox(logMsg);
+            string operMsg = string.Format("Fiber {0}{1}", fiber.fiberId, displayText);
+            WriteToOperator(operMsg, msgtype);
+            if (fiber.results.lastTestResult != "I")
+            {
+                WriteToLog(logMsg);
+                WriteToResultsBox(logMsg);
+            }
+            else
+            {
+                WriteToLog(operMsg);
+                WriteToResultsBox(operMsg);
+            }
         }
 
         private void PopulateGridView()
@@ -439,8 +448,8 @@ namespace CURL500Test
                     serialIdTextBox.Text = "5203881944";
                     break;
                 case "DD":
-                    fiberIdTextBox.Text = "031VF3024A1CLD";
-                    serialIdTextBox.Text = "4104631320";
+                    fiberIdTextBox.Text = "014VT2512A1CLJ";
+                    serialIdTextBox.Text = "5202939530";
                     break;
                 case "EE":
                     fiberIdTextBox.Text = "005VV2609C2CLG";

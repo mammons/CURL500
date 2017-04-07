@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Deployment.Application;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace CURL500Test
 {
@@ -44,15 +46,36 @@ namespace CURL500Test
             //}
             //else
             //{
-            //TODO get this working with clickonce commandline arguments
-            //this.server = "DEV";// args[1].Trim();
-            this.workstation = "1S";// args[2].Trim();
-            this.testSetName = "LTCURL";// args[3].Trim();
-            this.testSetNumber = "01";// args[4].Trim();
-            this.serialPortNumber = '3';// Convert.ToInt16(args[5].Trim());
+                //TODO get this working with clickonce commandline arguments
+                //    this.server = "DEV";// args[1].Trim();
+                this.workstation = "1S";// args[2].Trim();
+                this.testSetName = "LTCURL";// args[3].Trim();
+                this.testSetNumber = "01";// args[4].Trim();
+                this.serialPortNumber = '3';// Convert.ToInt16(args[5].Trim());
+                                            //this.server = args[1].Trim();
+                                            //this.workstation = args[2].Trim();
+                                            //this.testSetName = args[3].Trim();
+                                            //this.testSetNumber =args[4].Trim();
+                                            //this.serialPortNumber = Convert.ToInt16(args[5].Trim());
+
             //}
 
             //setServer();
+
+            //NameValueCollection queryArgs = GetQueryStringParameters();
+        }
+
+        private NameValueCollection GetQueryStringParameters()
+        {
+            NameValueCollection nameValueTable = new NameValueCollection();
+
+            if (ApplicationDeployment.IsNetworkDeployed)
+            {
+                string queryString = ApplicationDeployment.CurrentDeployment.ActivationUri.Query;
+                nameValueTable = HttpUtility.ParseQueryString(queryString);
+            }
+
+            return (nameValueTable);
         }
 
         private void setServer()

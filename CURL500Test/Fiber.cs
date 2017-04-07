@@ -34,7 +34,7 @@ namespace CURL500Test
         public bool CheckIfTestRequired(TestSet set)
         {
             var test = testList.TestEntries.FirstOrDefault(o => o.Name == set.testName);
-            if (isReferenceFiber())
+            if (isReferenceFiber() || isNSTD())
             {
                 return true;
             }
