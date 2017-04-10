@@ -29,7 +29,7 @@ namespace CURL500Test
 
         private string prodbeforeFile = AppDomain.CurrentDomain.BaseDirectory + "FiberData.ini";
         private string prodafterFile = AppDomain.CurrentDomain.BaseDirectory + "ResultData.ini";
-        private string path = @"C:\CURL400\results";
+        private string path = @"C:\CURL500\results";
         //private string portNumber;
 
 

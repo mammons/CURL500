@@ -17,7 +17,8 @@ namespace CURL500Test
         public bool isAvailable { get; set; }
         public string testName { get; set; }
         public string sessionInfo { get; set; } = "No session Info.";
-        public string portNumber { get; set; } = "COM4";
+        public string settingsPath { get; set; } = @"C:\CURL500\settings.ini";
+        public string portNumber { get; set; } = IniFileHelper.ReadValue("TestSet", "Port", @"C:\CURL500\settings.ini", "COM1");
 
 
         public TestSet()

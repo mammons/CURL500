@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.fiberIdTextBox = new System.Windows.Forms.TextBox();
             this.serialIdTextBox = new System.Windows.Forms.TextBox();
             this.testListDataGrid = new System.Windows.Forms.DataGridView();
@@ -62,6 +62,7 @@
             this.COM8ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.COM9ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testCOM = new System.Windows.Forms.ToolStripMenuItem();
+            this.testSetSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.testListDataGrid)).BeginInit();
             this.tabControl.SuspendLayout();
             this.msgTab.SuspendLayout();
@@ -99,33 +100,33 @@
             this.testListDataGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.testListDataGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.testListDataGrid.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.testListDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.testListDataGrid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.testListDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.testListDataGrid.DefaultCellStyle = dataGridViewCellStyle8;
-            this.testListDataGrid.Location = new System.Drawing.Point(450, 61);
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.testListDataGrid.DefaultCellStyle = dataGridViewCellStyle2;
+            this.testListDataGrid.Location = new System.Drawing.Point(465, 61);
             this.testListDataGrid.Name = "testListDataGrid";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.testListDataGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.testListDataGrid.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.testListDataGrid.Size = new System.Drawing.Size(264, 562);
             this.testListDataGrid.TabIndex = 2;
             // 
@@ -154,7 +155,7 @@
             this.testListLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.testListLabel.AutoSize = true;
             this.testListLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.testListLabel.Location = new System.Drawing.Point(446, 34);
+            this.testListLabel.Location = new System.Drawing.Point(461, 34);
             this.testListLabel.Name = "testListLabel";
             this.testListLabel.Size = new System.Drawing.Size(78, 24);
             this.testListLabel.TabIndex = 5;
@@ -208,7 +209,7 @@
             this.tabControl.Location = new System.Drawing.Point(12, 295);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(423, 315);
+            this.tabControl.Size = new System.Drawing.Size(438, 315);
             this.tabControl.TabIndex = 9;
             // 
             // msgTab
@@ -217,7 +218,7 @@
             this.msgTab.Location = new System.Drawing.Point(4, 22);
             this.msgTab.Name = "msgTab";
             this.msgTab.Padding = new System.Windows.Forms.Padding(3);
-            this.msgTab.Size = new System.Drawing.Size(371, 289);
+            this.msgTab.Size = new System.Drawing.Size(430, 289);
             this.msgTab.TabIndex = 0;
             this.msgTab.Text = "Message";
             this.msgTab.UseVisualStyleBackColor = true;
@@ -232,7 +233,7 @@
             this.operatorMessageBox.Location = new System.Drawing.Point(0, 0);
             this.operatorMessageBox.Multiline = true;
             this.operatorMessageBox.Name = "operatorMessageBox";
-            this.operatorMessageBox.Size = new System.Drawing.Size(376, 289);
+            this.operatorMessageBox.Size = new System.Drawing.Size(430, 289);
             this.operatorMessageBox.TabIndex = 0;
             // 
             // logTab
@@ -241,7 +242,7 @@
             this.logTab.Location = new System.Drawing.Point(4, 22);
             this.logTab.Name = "logTab";
             this.logTab.Padding = new System.Windows.Forms.Padding(3);
-            this.logTab.Size = new System.Drawing.Size(371, 289);
+            this.logTab.Size = new System.Drawing.Size(415, 289);
             this.logTab.TabIndex = 1;
             this.logTab.Text = "Log";
             this.logTab.UseVisualStyleBackColor = true;
@@ -277,7 +278,7 @@
             this.statusLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 613);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(726, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(741, 22);
             this.statusStrip1.TabIndex = 11;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -316,7 +317,7 @@
             this.menu});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(726, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(741, 24);
             this.menuStrip1.TabIndex = 12;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -324,7 +325,8 @@
             // 
             this.menu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.COMToolStripMenuItem,
-            this.testCOM});
+            this.testCOM,
+            this.testSetSettingsToolStripMenuItem});
             this.menu.Name = "menu";
             this.menu.Size = new System.Drawing.Size(50, 20);
             this.menu.Text = "Menu";
@@ -342,7 +344,7 @@
             this.COM8ToolStripMenuItem,
             this.COM9ToolStripMenuItem});
             this.COMToolStripMenuItem.Name = "COMToolStripMenuItem";
-            this.COMToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.COMToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.COMToolStripMenuItem.Text = "COM";
             this.COMToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.COMToolStripMenuItem_DropDownItemClicked);
             // 
@@ -403,16 +405,23 @@
             // testCOM
             // 
             this.testCOM.Name = "testCOM";
-            this.testCOM.Size = new System.Drawing.Size(152, 22);
+            this.testCOM.Size = new System.Drawing.Size(160, 22);
             this.testCOM.Text = "Test COM Port";
             this.testCOM.Click += new System.EventHandler(this.testCOM_Click);
+            // 
+            // testSetSettingsToolStripMenuItem
+            // 
+            this.testSetSettingsToolStripMenuItem.Name = "testSetSettingsToolStripMenuItem";
+            this.testSetSettingsToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.testSetSettingsToolStripMenuItem.Text = "Test Set Settings";
+            this.testSetSettingsToolStripMenuItem.Click += new System.EventHandler(this.testSetSettingsToolStripMenuItem_Click);
             // 
             // Main
             // 
             this.AcceptButton = this.submitButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(726, 635);
+            this.ClientSize = new System.Drawing.Size(741, 635);
             this.Controls.Add(this.testListDataGrid);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
@@ -426,7 +435,7 @@
             this.Controls.Add(this.fiberIdTextBox);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Main";
-            this.Text = "CURL400 Test";
+            this.Text = "CURL500 Test";
             this.Load += new System.EventHandler(this.Main_Load);
             ((System.ComponentModel.ISupportInitialize)(this.testListDataGrid)).EndInit();
             this.tabControl.ResumeLayout(false);
@@ -478,6 +487,7 @@
         private System.Windows.Forms.ToolStripMenuItem COM8ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem COM9ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testCOM;
+        private System.Windows.Forms.ToolStripMenuItem testSetSettingsToolStripMenuItem;
     }
 }
 

@@ -111,7 +111,7 @@ namespace CURL500Test
                 displayText = "Failed";
                 msgtype = messageType.FAILED;
             }
-            string logMsg = string.Format("Test Result: Offset(PTS Value):{0}um Radius:{1}m Pass/Fail: {2}", fiber.results.curlResults.ISEvalue.ToString("000.0"), fiber.results.curlResults.ISEradius, fiber.results.curlResults.ISEresult);
+            string logMsg = string.Format("Test Result for {3}: Offset(PTS Value):{0}um Radius:{1}m Pass/Fail: {2}", fiber.results.curlResults.ISEvalue.ToString("000.0"), fiber.results.curlResults.ISEradius, fiber.results.curlResults.ISEresult, fiber.fiberId);
             string operMsg = string.Format("Fiber {0}{1}", fiber.fiberId, displayText);
             WriteToOperator(operMsg, msgtype);
             if (fiber.results.lastTestResult != "I")
@@ -509,6 +509,11 @@ namespace CURL500Test
         private void PRODToolStripMenuItem_Click(object sender, EventArgs e)
         {
             System.Configuration.ConfigurationManager.AppSettings["Server"] = "PROD";
+        }
+
+        private void testSetSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Settings settings = new Settings();
         }
     }
 }
