@@ -35,6 +35,7 @@
             this.readResultBtn = new System.Windows.Forms.Button();
             this.statusBtn = new System.Windows.Forms.Button();
             this.openPortBtn = new System.Windows.Forms.Button();
+            this.readErrorBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // tb
@@ -102,12 +103,23 @@
             this.openPortBtn.UseVisualStyleBackColor = true;
             this.openPortBtn.Click += new System.EventHandler(this.openPortBtn_Click);
             // 
+            // readErrorBtn
+            // 
+            this.readErrorBtn.Location = new System.Drawing.Point(13, 375);
+            this.readErrorBtn.Name = "readErrorBtn";
+            this.readErrorBtn.Size = new System.Drawing.Size(75, 23);
+            this.readErrorBtn.TabIndex = 8;
+            this.readErrorBtn.Text = "Read Errors";
+            this.readErrorBtn.UseVisualStyleBackColor = true;
+            this.readErrorBtn.Click += new System.EventHandler(this.readErrorBtn_Click);
+            // 
             // CommTest
             // 
             this.AcceptButton = this.sendBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(385, 435);
+            this.Controls.Add(this.readErrorBtn);
             this.Controls.Add(this.openPortBtn);
             this.Controls.Add(this.statusBtn);
             this.Controls.Add(this.readResultBtn);
@@ -131,5 +143,6 @@
         private System.Windows.Forms.Button readResultBtn;
         private System.Windows.Forms.Button statusBtn;
         private System.Windows.Forms.Button openPortBtn;
+        private System.Windows.Forms.Button readErrorBtn;
     }
 }

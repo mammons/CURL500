@@ -117,7 +117,7 @@
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.testListDataGrid.DefaultCellStyle = dataGridViewCellStyle2;
-            this.testListDataGrid.Location = new System.Drawing.Point(465, 61);
+            this.testListDataGrid.Location = new System.Drawing.Point(499, 61);
             this.testListDataGrid.Name = "testListDataGrid";
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
@@ -155,7 +155,7 @@
             this.testListLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.testListLabel.AutoSize = true;
             this.testListLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.testListLabel.Location = new System.Drawing.Point(461, 34);
+            this.testListLabel.Location = new System.Drawing.Point(495, 34);
             this.testListLabel.Name = "testListLabel";
             this.testListLabel.Size = new System.Drawing.Size(78, 24);
             this.testListLabel.TabIndex = 5;
@@ -168,11 +168,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.mainLogTextBox.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.mainLogTextBox.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.mainLogTextBox.Location = new System.Drawing.Point(0, 6);
+            this.mainLogTextBox.Location = new System.Drawing.Point(0, 0);
             this.mainLogTextBox.Multiline = true;
             this.mainLogTextBox.Name = "mainLogTextBox";
             this.mainLogTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.mainLogTextBox.Size = new System.Drawing.Size(375, 276);
+            this.mainLogTextBox.Size = new System.Drawing.Size(464, 289);
             this.mainLogTextBox.TabIndex = 6;
             // 
             // submitButton
@@ -209,7 +209,7 @@
             this.tabControl.Location = new System.Drawing.Point(12, 295);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(438, 315);
+            this.tabControl.Size = new System.Drawing.Size(472, 315);
             this.tabControl.TabIndex = 9;
             // 
             // msgTab
@@ -218,7 +218,7 @@
             this.msgTab.Location = new System.Drawing.Point(4, 22);
             this.msgTab.Name = "msgTab";
             this.msgTab.Padding = new System.Windows.Forms.Padding(3);
-            this.msgTab.Size = new System.Drawing.Size(430, 289);
+            this.msgTab.Size = new System.Drawing.Size(464, 289);
             this.msgTab.TabIndex = 0;
             this.msgTab.Text = "Message";
             this.msgTab.UseVisualStyleBackColor = true;
@@ -233,7 +233,7 @@
             this.operatorMessageBox.Location = new System.Drawing.Point(0, 0);
             this.operatorMessageBox.Multiline = true;
             this.operatorMessageBox.Name = "operatorMessageBox";
-            this.operatorMessageBox.Size = new System.Drawing.Size(430, 289);
+            this.operatorMessageBox.Size = new System.Drawing.Size(464, 289);
             this.operatorMessageBox.TabIndex = 0;
             // 
             // logTab
@@ -242,7 +242,7 @@
             this.logTab.Location = new System.Drawing.Point(4, 22);
             this.logTab.Name = "logTab";
             this.logTab.Padding = new System.Windows.Forms.Padding(3);
-            this.logTab.Size = new System.Drawing.Size(415, 289);
+            this.logTab.Size = new System.Drawing.Size(464, 289);
             this.logTab.TabIndex = 1;
             this.logTab.Text = "Log";
             this.logTab.UseVisualStyleBackColor = true;
@@ -254,7 +254,7 @@
             this.resultsBox.Location = new System.Drawing.Point(4, 22);
             this.resultsBox.Name = "resultsBox";
             this.resultsBox.Padding = new System.Windows.Forms.Padding(3);
-            this.resultsBox.Size = new System.Drawing.Size(415, 289);
+            this.resultsBox.Size = new System.Drawing.Size(464, 289);
             this.resultsBox.TabIndex = 2;
             this.resultsBox.Text = "Results";
             this.resultsBox.UseVisualStyleBackColor = true;
@@ -268,7 +268,7 @@
             this.resultsTextBox.Multiline = true;
             this.resultsTextBox.Name = "resultsTextBox";
             this.resultsTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.resultsTextBox.Size = new System.Drawing.Size(415, 286);
+            this.resultsTextBox.Size = new System.Drawing.Size(464, 293);
             this.resultsTextBox.TabIndex = 0;
             // 
             // statusStrip1
@@ -278,7 +278,7 @@
             this.statusLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 613);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(741, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(775, 22);
             this.statusStrip1.TabIndex = 11;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -317,7 +317,7 @@
             this.menu});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(741, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(775, 24);
             this.menuStrip1.TabIndex = 12;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -421,7 +421,7 @@
             this.AcceptButton = this.submitButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(741, 635);
+            this.ClientSize = new System.Drawing.Size(775, 635);
             this.Controls.Add(this.testListDataGrid);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);

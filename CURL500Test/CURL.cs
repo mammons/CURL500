@@ -30,7 +30,7 @@ namespace CURL500Test
         private string prodbeforeFile = AppDomain.CurrentDomain.BaseDirectory + "FiberData.ini";
         private string prodafterFile = AppDomain.CurrentDomain.BaseDirectory + "ResultData.ini";
         private string path = @"C:\CURL500\results";
-        //private string portNumber;
+        private const int testErrorLimit = 100;
 
 
 
@@ -358,12 +358,13 @@ namespace CURL500Test
             int.TryParse(errors, out errorNumber);
 
             fiber.results.curlResults.ISEradius = processedValue;
-            fiber.results.curlResults.successful = errorNumber < 50;
+            fiber.results.curlResults.successful = errorNumber < testErrorLimit;
             WriteToLog(string.Format("Test complete with radius: {0}m", processedValue));
+            logger.Info("Number of errors: {0}. If > {1} => Bad Test", errorNumber, testErrorLimit);
             radiusResultLabel.Text = processedValue;
             statusResultLabel.Text = fiber.results.curlResults.successful ? "Successful" : "Failed";
             calculateOffsetForPTS(fiber.results.curlResults.ISEradius);
-            return true;
+            return fiber.results.curlResults.successful;
         }
 
         private string ProcessPEReturn(string inVal)
@@ -435,7 +436,8 @@ namespace CURL500Test
                 DialogResult remeas = MessageBox.Show("The PE set reported that the test was unsuccessful. Try cleaning the fiber and measuring again.", "Unsuccessful Test", MessageBoxButtons.OKCancel);
                 if (remeas == DialogResult.OK)
                 {
-                    SetupTest();
+                    //SetupTest();
+                    logger.Info("PE set reported too many errors on test, operator selected to remeasure the fiber");
                     return;
                 }
                 else

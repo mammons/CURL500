@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using NLog;
 
 namespace CURL500Test
 {
@@ -32,7 +33,7 @@ namespace CURL500Test
 
             if (File.Exists(path))
             {
-                this.server = IniFileHelper.ReadValue("TestSet", "Server", path, "DEV");
+                this.server = IniFileHelper.ReadValue("TestSet", "Server", path);
                 this.workstation = IniFileHelper.ReadValue("TestSet", "Workstation", path);
                 this.testSetName = IniFileHelper.ReadValue("TestSet", "Name", path);
                 this.testSetNumber = IniFileHelper.ReadValue("TestSet", "Number", path);
@@ -86,21 +87,19 @@ namespace CURL500Test
             switch (server)
             {
                 case "PROD":
-                    //Properties.Settings.Default.Server = "PROD";
                     System.Configuration.ConfigurationManager.AppSettings["Server"] = "PROD";
                     break;
                 case "DEV":
-                    //Properties.Settings.Default.Server = "DEV";
                     System.Configuration.ConfigurationManager.AppSettings["Server"] = "DEV";
                     break;
                 case "SIM":
                     Properties.Settings.Default.Server = "SIM";
                     break;
                 default:
-                    //Properties.Settings.Default.Server = "PROD";
                     System.Configuration.ConfigurationManager.AppSettings["Server"] = "PROD";
                     break;
             }
+            LogManager.Configuration.Variables["server"] = server;
         }
     }
 

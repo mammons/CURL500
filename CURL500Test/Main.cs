@@ -18,9 +18,9 @@ namespace CURL500Test
         TestSet testSet;
         Fiber fiber = new Fiber();
 
-        private static Logger logger;
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        string version = "1.0.0";
+        string version = "1.0.3";
 
         ErrorProvider fiberIdErrorProvider = new ErrorProvider();        
 
@@ -28,7 +28,6 @@ namespace CURL500Test
         {
             testArgs = new CmdLineArgs();
             oper = new Operator();
-            logger = LogManager.GetCurrentClassLogger(); //This is called after cmdlineargs so i can get the server
             InitializeComponent();
             Show();
             showLogin();
@@ -180,7 +179,7 @@ namespace CURL500Test
         {
             if (oper.loggedIn)
             {
-                this.Text = testSet.sessionInfo = string.Format("Operator: {0} | Version: {5} | Workstation: {1} | TestSet: {2} | TestSet Number: {3} | Server: {4}", oper.name, testSet.workstation, testSet.name, testSet.number, testArgs.server, version);
+                this.Text = testSet.sessionInfo = string.Format("Operator: {0} | Version: {5} | Workstation: {1} | TestSet: {2} | TestSet Number: {3} | Server: {4}", oper.name, testSet.workstation, testSet.name, testSet.number, System.Configuration.ConfigurationManager.AppSettings["Server"], version);
             }
             else
             {
@@ -416,6 +415,7 @@ namespace CURL500Test
         private void Main_Load(object sender, EventArgs e)
         {
             InitializeTestSet();
+            LogManager.ReconfigExistingLoggers();
         }
 
         public void OnPTSMessageSending(object source, EventArgs args)

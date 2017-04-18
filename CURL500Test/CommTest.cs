@@ -158,6 +158,13 @@ namespace CURL500Test
         {
             tb.AppendText(str + Environment.NewLine);
         }
+
+        private async void readErrorBtn_Click(object sender, EventArgs e)
+        {
+            WriteToLog("Sending command READ CURL_ERRORS");
+            response = await tSet.port.CheckForTestErrors();
+            WriteToLog("Response: " + response);
+        }
     }
 
 

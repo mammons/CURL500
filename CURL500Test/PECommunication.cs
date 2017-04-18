@@ -134,7 +134,7 @@ namespace CURL500Test
 
         protected virtual void OnSerialMessageSending()
         {
-            logger.Debug("OnSerialMessageSending ");
+            //logger.Debug("OnSerialMessageSending ");
             SerialMessageSending?.Invoke(this, EventArgs.Empty);
         }
 
@@ -146,13 +146,13 @@ namespace CURL500Test
 
         private void OnErrorReceived(object source, EventArgs args)
         {
-            logger.Debug("OnErrorReceived sent me");
+            //logger.Debug("OnErrorReceived sent me");
             OnSerialMessageReceived();
         }
 
         private void OnDataReceived(object source, EventArgs args)
         {
-            logger.Debug("OnDataReceived sent me");
+            //logger.Debug("OnDataReceived sent me");
             OnSerialMessageReceived();
         }
 
