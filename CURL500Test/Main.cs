@@ -20,7 +20,7 @@ namespace CURL500Test
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        string version = "1.0.3";
+        string version = "1.0.4";
 
         ErrorProvider fiberIdErrorProvider = new ErrorProvider();        
 
@@ -514,6 +514,12 @@ namespace CURL500Test
         private void testSetSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Settings settings = new Settings();
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            e.Cancel = false;
+            base.OnFormClosing(e);
         }
     }
 }
