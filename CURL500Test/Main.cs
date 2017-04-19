@@ -20,7 +20,7 @@ namespace CURL500Test
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        string version = "1.0.4";
+        string version = "1.0.5";
 
         ErrorProvider fiberIdErrorProvider = new ErrorProvider();        
 
