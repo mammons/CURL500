@@ -304,7 +304,7 @@ namespace CURL500Test
             if (measStatus.Contains("OK"))
             {
                 int setStatus = -1;
-                while(setStatus == -1 || setStatus == 1)
+                while(setStatus != 2 || setStatus == 12)
                 {
                     int.TryParse(ProcessPEReturn(await testSet.port.CheckStatus()), out setStatus);
                 }

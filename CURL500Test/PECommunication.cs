@@ -90,7 +90,8 @@ namespace CURL500Test
 
         public async Task<string> Measure()
         {
-            return await sendCommand("MEASURE");
+            string measResponse;
+            return measResponse = await sendCommand("MEASURE");
             
         }
 
@@ -130,6 +131,11 @@ namespace CURL500Test
         public string CurrentPort()
         {
             return port.CurrentPort;
+        }
+
+        private string DecodeResponse(byte[] str)
+        {
+            return Encoding.ASCII.GetString(str);
         }
 
         protected virtual void OnSerialMessageSending()
