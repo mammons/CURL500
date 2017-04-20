@@ -313,11 +313,7 @@ namespace CURL500Test
                 setResponse = await testSet.port.ReadPort();
                 logger.Debug("setResponse: {0}", setResponse);
                 int setStatus = -1;
-                //while(setStatus !=2 && setStatus != 0)
-                //{
-                //    int.TryParse(ProcessPEReturn(await testSet.port.CheckStatus()), out setStatus);
-                //    logger.Debug("status in loop: {0}", setStatus);
-                //}
+
                 if(setResponse.Contains("FINISHED")) int.TryParse(ProcessPEReturn(await testSet.port.CheckStatus()), out setStatus);
                 logger.Debug("Final setStatus: {0}", setStatus);
                 if (setStatus == 2) //From PE set means Measurement finished. Results in memory.
