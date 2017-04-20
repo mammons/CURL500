@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NLog;
 
 namespace CURL500Test
 {
@@ -15,10 +16,12 @@ namespace CURL500Test
         public string number { get; set; }
         public string type { get; set; }
         public bool isAvailable { get; set; }
+        public bool subscribedToSerialEvents { get; set; }
         public string testName { get; set; }
         public string sessionInfo { get; set; } = "No session Info.";
         public string settingsPath { get; set; } = @"C:\CURL500\settings.ini";
         public string portNumber { get; set; } = IniFileHelper.ReadValue("TestSet", "Port", @"C:\CURL500\settings.ini", "COM1");
+        Logger logger = LogManager.GetCurrentClassLogger();
 
 
         public TestSet()
@@ -58,18 +61,19 @@ namespace CURL500Test
 
         public bool ManagePorts()
         {
+            logger.Debug("managing ports");
             if(port == null)
             {
                 port = new PECommunication(portNumber);
-                return port.open();
             }
             if (port != null && portNumber != port.CurrentPort())
             {
                 port.close();
                 port = new PECommunication(portNumber);
-                return port.open();
             }
-            return port.isOpen();
+            isAvailable = port.open();
+            logger.Debug("Isavailable in testsetclass: {0}", this.isAvailable.ToString());
+            return this.isAvailable;
         }
 
     }
