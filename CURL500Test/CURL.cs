@@ -301,12 +301,15 @@ namespace CURL500Test
             logger.Debug("Testing curl on {0}", testSet.portNumber);
 
             var measStatus = await testSet.port.Measure();
+            logger.Debug("getresultdata measstatus: {0}", measStatus);
             if (measStatus.Contains("OK"))
             {
                 int setStatus = -1;
                 while(setStatus != 2 || setStatus == 12)
                 {
+                    logger.Debug("Set status: {0}", setStatus);
                     int.TryParse(ProcessPEReturn(await testSet.port.CheckStatus()), out setStatus);
+                    Thread.Sleep(1000);
                 }
                 if (setStatus == 2) //From PE set means Measurement finished. Results in memory.
                 {
@@ -505,12 +508,11 @@ namespace CURL500Test
 
                 logger.Debug("Serial message received: " + args.response);
                 loadingCircle.LoadingCircleControl.Active = false;
-                //WriteToLog(args.response);
         }
 
         private void OnSerialMessageSending(object source, EventArgs args)
         {
-            logger.Debug("Serial message sending event raised");
+            //logger.Debug("Serial message sending event raised");
             loadingCircle.LoadingCircleControl.Active = true;
         }
 
