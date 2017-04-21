@@ -20,7 +20,7 @@ namespace CURL500Test
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        string version = "1.0.5betaTestEditionLive";
+        string version = "1.0.5";
 
         ErrorProvider fiberIdErrorProvider = new ErrorProvider();        
 
@@ -207,7 +207,7 @@ namespace CURL500Test
             }
         }
 
-        private async Task InitializeTestSet()
+        private void InitializeTestSet()
         {
             string err;
 
