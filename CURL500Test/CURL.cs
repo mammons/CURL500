@@ -1,6 +1,7 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace CURL500Test
         private string path = @"C:\CURL500\results";
         private const int testErrorLimit = 100;
 
-
+        private string setResponse;
 
 
         public CURL(Fiber fiber, TestSet testSet)
@@ -45,7 +46,8 @@ namespace CURL500Test
 
         public async Task SetupTest()
         {
-            if (await testSet.port.CheckConnected())
+            logger.Debug("Test set available? {0}", testSet.isAvailable.ToString());
+            if (testSet.isAvailable)
             {
                 yesButton.Visible = false;
                 noButton.Visible = false;
@@ -60,8 +62,7 @@ namespace CURL500Test
                 statusResultLabel.TextChanged += statusResultLabel_TextChanged;
                 WriteToLog(string.Format("-> Load {0} fiber sample", fiber.fiberId.Trim()));
                 WriteToStatus("Waiting for curl test to complete");
-                testSet.port.SerialMessageSending += OnSerialMessageSending;
-                testSet.port.SerialMessageReceived += OnSerialMessageReceived;
+                Subscribe();
             }
             else
             {
@@ -69,6 +70,7 @@ namespace CURL500Test
                 closeBtn.Visible = true;
                 closeBtn.Focus();
             }
+                       
         }
 
         /// <summary>
@@ -215,7 +217,12 @@ namespace CURL500Test
                 WriteToLog("Fiber ID sent to test set");
             }
             var gotResults = await GetResultData();
-            if(!gotResults) return;
+            if (!gotResults)
+            {
+                SetupTest();
+                return;
+            }
+            
             if (EvaluateResultData())
             {
                 await SendCurlResultToPTS();
@@ -301,16 +308,14 @@ namespace CURL500Test
             logger.Debug("Testing curl on {0}", testSet.portNumber);
 
             var measStatus = await testSet.port.Measure();
-            logger.Debug("getresultdata measstatus: {0}", measStatus);
             if (measStatus.Contains("OK"))
             {
+                setResponse = await testSet.port.ReadPort();
+                logger.Debug("setResponse: {0}", setResponse);
                 int setStatus = -1;
-                while(setStatus != 2 || setStatus == 12)
-                {
-                    logger.Debug("Set status: {0}", setStatus);
-                    int.TryParse(ProcessPEReturn(await testSet.port.CheckStatus()), out setStatus);
-                    Thread.Sleep(1000);
-                }
+
+                if(setResponse.Contains("FINISHED")) int.TryParse(ProcessPEReturn(await testSet.port.CheckStatus()), out setStatus);
+                logger.Debug("Final setStatus: {0}", setStatus);
                 if (setStatus == 2) //From PE set means Measurement finished. Results in memory.
                 {
                    return await ProcessResultData();
@@ -340,13 +345,13 @@ namespace CURL500Test
             switch (setStatus)
             {
                 case (0):
-                    WriteToLog("System ready no results in memory. Test failed.");
+                    WriteToLog("System ready but no results in memory. Test failed.", true);
                     break;
                 case (12):
-                    WriteToLog("Measurement aborted, or error. No valid data");
+                    WriteToLog("Measurement aborted, or error. No valid data", true);
                     break;
                 default:
-                    WriteToLog("Problem with set not returning value. Try restarting");
+                    WriteToLog("Problem with set not returning value. Try restarting", true);
                     break;
             }
         }
@@ -372,7 +377,6 @@ namespace CURL500Test
 
         private string ProcessPEReturn(string inVal)
         {
-            //TODO PE returns a \r with the radius so remove that before assigning it to properties because it's messing up logging
             string outVal = inVal.Substring(0, inVal.Length-1);
 
             if (outVal.Contains("FAIL"))
@@ -491,6 +495,17 @@ namespace CURL500Test
             }
         }
 
+        private void Subscribe()
+        {
+            if (!testSet.subscribedToSerialEvents)
+            {
+                testSet.port.SerialMessageSending += OnSerialMessageSending;
+                testSet.port.SerialMessageReceived += OnSerialMessageReceived;
+                testSet.subscribedToSerialEvents = true;
+                logger.Debug("Subscribed to serial events");
+            }
+        }
+
         public void OnPTSMessageSending(object source, EventArgs args)
         {
             loadingCircle.LoadingCircleControl.Active = true;
@@ -512,7 +527,6 @@ namespace CURL500Test
 
         private void OnSerialMessageSending(object source, EventArgs args)
         {
-            //logger.Debug("Serial message sending event raised");
             loadingCircle.LoadingCircleControl.Active = true;
         }
 

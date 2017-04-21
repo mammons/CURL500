@@ -100,6 +100,7 @@ namespace CURL500Test
                     break;
             }
             LogManager.Configuration.Variables["server"] = server;
+            LogManager.Configuration.Variables["setNum"] = testSetNumber;
         }
     }
 
