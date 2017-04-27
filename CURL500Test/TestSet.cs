@@ -36,7 +36,7 @@ namespace CURL500Test
             this.name = name;
             this.workstation = workstation;
             this.number = number;
-            SetTestName();
+            setTestName();
         }
 
         public TestSet(string[] args)
@@ -44,10 +44,13 @@ namespace CURL500Test
             this.workstation = args[2].Trim();
             this.name = args[3].Trim();
             this.number = args[4].Trim();
-            SetTestName();
+            setTestName();
         }
 
-        public void SetTestName()
+        /// <summary>
+        /// This matches up the test set name with its test name
+        /// </summary>
+        public void setTestName()
         {
             switch (name)
             {
@@ -59,7 +62,11 @@ namespace CURL500Test
             }
         }
 
-        public bool ManagePorts()
+        /// <summary>
+        /// This manages COM ports. It should create a PECommunication instance if there isn't one or try to close the existing one and open a one when changing between them
+        /// </summary>
+        /// <returns>Whether the port was successfully opened or not</returns>
+        public bool managePorts()
         {
             logger.Debug("managing ports");
             if(port == null)
@@ -72,7 +79,6 @@ namespace CURL500Test
                 port = new PECommunication(portNumber);
             }
             isAvailable = port.open();
-            logger.Debug("Isavailable in testsetclass: {0}", this.isAvailable.ToString());
             return this.isAvailable;
         }
 

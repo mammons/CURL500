@@ -30,7 +30,7 @@ namespace CURL500Test
         }
 
 
-        public async Task<string> SendReceiveAsync(string sendMessage)
+        public async Task<string> sendReceiveAsync(string sendMessage)
         {
             string responseString;
             using (var client = new HttpClient(new HttpClientHandler { UseProxy = false }))
@@ -79,8 +79,8 @@ namespace CURL500Test
 
             try
             {
-                var response = await SendReceiveAsync(sendMessage);
-                return ParsePTSResponse(response);
+                var response = await sendReceiveAsync(sendMessage);
+                return parsePTSResponse(response);
             }
             catch(Exception ex)
             {
@@ -93,9 +93,9 @@ namespace CURL500Test
         public async Task<IEnumerable<string>> loginOperatorAsync(Operator oper, TestSet tset)
         {
             string sendMessage = string.Format("{0}:{1}:{2}:{3}:RE:OP:{4}:", tset.workstation, tset.name, tset.number, oper.Id, oper.password);
-            var response = await SendReceiveAsync(sendMessage);
+            var response = await sendReceiveAsync(sendMessage);
 
-            return ParsePTSResponse(response);
+            return parsePTSResponse(response);
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace CURL500Test
         /// </summary>
         /// <param name="response"></param>
         /// <returns>List<string> filled with each item in PTS response</string></returns>
-        private IEnumerable<string> ParsePTSResponse(string response)
+        private IEnumerable<string> parsePTSResponse(string response)
         {
             List<string> ptsResponseList = new List<string>(response.Split(':'));
             return ptsResponseList;
@@ -122,8 +122,8 @@ namespace CURL500Test
 
             try
             {
-                var response = await SendReceiveAsync(sendMessage);
-                return ParsePTSResponse(response);
+                var response = await sendReceiveAsync(sendMessage);
+                return parsePTSResponse(response);
             }
             catch (Exception ex)
             {
@@ -145,9 +145,9 @@ namespace CURL500Test
         {
             fiber.formatIdForPTS();
             string sendMessage = string.Format("{0}:{1}:{2}:{3}:RE:LM:{4}", tset.workstation, tset.name, tset.number, tset.oper.Id, fiber.fiberId);
-            var response = await SendReceiveAsync(sendMessage);
+            var response = await sendReceiveAsync(sendMessage);
 
-            return ParsePTSResponse(response);
+            return parsePTSResponse(response);
         }
 
         protected virtual void OnPTSMessageSending()

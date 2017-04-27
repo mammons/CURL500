@@ -31,7 +31,7 @@ namespace CURL500Test
             }
         }
 
-        public bool CheckIfTestRequired(TestSet set)
+        public bool checkIfTestRequired(TestSet set)
         {
             var test = testList.TestEntries.FirstOrDefault(o => o.Name == set.testName);
             if (isReferenceFiber() || isNSTD())
@@ -45,7 +45,7 @@ namespace CURL500Test
             return false;
         }
 
-        public bool CheckFiberNeedsRemeasure(TestSet set)
+        public bool checkFiberNeedsRemeasure(TestSet set)
         {
             var test = testList.TestEntries.FirstOrDefault(o => o.Name == set.testName);
             if (test != null)

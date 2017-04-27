@@ -31,7 +31,7 @@ namespace CURL500Test
             InitializeComponent();
             Show();
             showLogin();
-            UpdateCOMMenuItems(testSet.portNumber);
+            updateCOMMenuItems(testSet.portNumber);
         }
 
 
@@ -40,8 +40,8 @@ namespace CURL500Test
         {
             oper.loggedIn = false;
             updateTextBar();
-            WriteToOperator(string.Format("Operator {0} has logged off", oper.name), messageType.NORMAL);
-            WriteToStatus(string.Format("{0} logged off", oper.name));
+            writeToOperator(string.Format("Operator {0} has logged off", oper.name), messageType.NORMAL);
+            writeToStatus(string.Format("{0} logged off", oper.name));
             showLogin();
         }
 
@@ -53,40 +53,44 @@ namespace CURL500Test
         private async void submitButton_Click(object sender, EventArgs e)
         {
 
-            AssignIdsToFiber();
+            assignIdsToFiber();
             //Get the test list
             try
             {
-                var err = await GetTestListAsync();
+                var err = await getTestListAsync();
                 if (string.IsNullOrWhiteSpace(err))
                 {
                     //Get the limits for the test
-                    await GetTestLimitsAsync();
+                    await getTestLimitsAsync();
                     //Populate the display with the test list
-                    PopulateGridView();
+                    populateGridView();
                     //If the test for the current set is required, begin the test
-                    if (fiber.CheckIfTestRequired(testSet))
+                    if (fiber.checkIfTestRequired(testSet))
                     {
-                        WriteToOperator(string.Format("Running {0} test for {1}", testSet.testName, fiber.fiberId), messageType.NORMAL);
-                        PerformTest();
+                        writeToOperator(string.Format("Running {0} test for {1}", testSet.testName, fiber.fiberId), messageType.NORMAL);
+                        performTest();
                     }
                     else
                     {
-                        WriteToOperator(string.Format("{0} test not required for {1}", testSet.testName, fiber.fiberId), messageType.NORMAL);
+                        writeToOperator(string.Format("{0} test not required for {1}", testSet.testName, fiber.fiberId), messageType.NORMAL);
                     }
                 }
                 else
                 {
-                    WriteToOperator(err, messageType.URGENT);
+                    writeToOperator(err, messageType.URGENT);
                 }
             }
             catch (Exception ex)
             {
-                WriteToLog("Exception in Main.submit : " + ex.Message);
+                writeToLog("Exception in Main.submit : " + ex.Message);
             }
         }
 
-        private void PerformTest()
+        /// <summary>
+        /// Creates a new Test object and runs the test. This will usually open a new form for that test type. After the test
+        /// completes this updates the Main form for the operator
+        /// </summary>
+        private void performTest()
         {
             Test currentTest = new Test(fiber, testSet);
             currentTest.Run();
@@ -112,20 +116,20 @@ namespace CURL500Test
             }
             string logMsg = string.Format("Test Result for {3}: Offset(PTS Value):{0}um Radius:{1}m Pass/Fail: {2}", fiber.results.curlResults.ISEvalue.ToString("000.0"), fiber.results.curlResults.ISEradius, fiber.results.curlResults.ISEresult, fiber.fiberId);
             string operMsg = string.Format("Fiber {0}{1}", fiber.fiberId, displayText);
-            WriteToOperator(operMsg, msgtype);
+            writeToOperator(operMsg, msgtype);
             if (fiber.results.lastTestResult != "I")
             {
-                WriteToLog(logMsg);
-                WriteToResultsBox(logMsg);
+                writeToLog(logMsg);
+                writeToResultsBox(logMsg);
             }
             else
             {
-                WriteToLog(operMsg);
-                WriteToResultsBox(operMsg);
+                writeToLog(operMsg);
+                writeToResultsBox(operMsg);
             }
         }
 
-        private void PopulateGridView()
+        private void populateGridView()
         {
             testListDataGrid.DataSource = fiber.testList.TestEntries;
             updateTestMapDisplay();
@@ -157,7 +161,7 @@ namespace CURL500Test
             if (fiberIdTextBox.Text.Length < 12 && fiberIdTextBox.Text.ToUpper() != "AA")
             {
                 errorMessage = "Fiber ID must be at least 12 characters";
-                WriteToStatus(errorMessage);
+                writeToStatus(errorMessage);
                 return false;
             }
             else
@@ -197,17 +201,17 @@ namespace CURL500Test
             if (oper.loggedIn)
             {
                 updateTextBar();
-                WriteToOperator(string.Format("Welcome, {0}", oper.name), messageType.NORMAL);
-                WriteToStatus(string.Format("Operator {0} logged in", oper.name));
+                writeToOperator(string.Format("Welcome, {0}", oper.name), messageType.NORMAL);
+                writeToStatus(string.Format("Operator {0} logged in", oper.name));
             }
             else
             {
-                WriteToOperator(oper.name, messageType.URGENT); //oper.name will contain the error message from PTS
+                writeToOperator(oper.name, messageType.URGENT); //oper.name will contain the error message from PTS
                 return;
             }
         }
 
-        private void InitializeTestSet()
+        private void initializeTestSet()
         {
             string err;
 
@@ -217,32 +221,32 @@ namespace CURL500Test
             //if there was an error, display it
             if (!string.IsNullOrWhiteSpace(err))
             {
-                WriteToLog(err);
+                writeToLog(err);
             }
             //if no error create a new TestSet and assign the values from the command line arguments to the TestSet object
             else
             {
                 testSet = new TestSet(testArgs.testSetName, testArgs.workstation, testArgs.testSetNumber);
                 updateTextBar();
-                testSet.ManagePorts();
+                testSet.managePorts();
             }
         }
 
-        public void WriteToLog(string str)
+        public void writeToLog(string str)
         {
             this.mainLogTextBox.AppendText(str + "\r\n");
             logger.Info(str);
         }
 
-        public void WriteToLog(List<string> strs)
+        public void writeToLog(List<string> strs)
         {
             foreach (var str in strs)
             {
-                WriteToLog(str);
+                writeToLog(str);
             }
         }
 
-        private void WriteToOperator(string v, messageType type)
+        private void writeToOperator(string v, messageType type)
         {
             switch (type)
             {
@@ -268,19 +272,19 @@ namespace CURL500Test
             operatorMessageBox.Text = v;
             logger.Info(v);
         }
-        private void WriteToResultsBox(string str)
+        private void writeToResultsBox(string str)
         {
             resultsTextBox.AppendText(str + Environment.NewLine);
             logger.Info(testSet.sessionInfo + Environment.NewLine + (ObjectDumperExtensions.DumpToString(fiber.results, "Detail Results for " + fiber.fiberId)));
         }
 
-        private void WriteToStatus(string str)
+        private void writeToStatus(string str)
         {
             statusLabel.Text = str;
-            WriteToLog(str);
+            writeToLog(str);
         }
 
-        private void AssignIdsToFiber()
+        private void assignIdsToFiber()
         {
             fiber = new Fiber();
             if (string.IsNullOrWhiteSpace(fiber.fiberId) && !string.IsNullOrWhiteSpace(fiberIdTextBox.Text))
@@ -293,12 +297,12 @@ namespace CURL500Test
             }
         }
 
-        private async Task GetTestLimitsAsync()
+        private async Task getTestLimitsAsync()
         {
             //List<string> limits = new List<string>();
 
             //Update log
-            WriteToLog(string.Format("Getting test limits for test set {0}", testSet.name));
+            writeToLog(string.Format("Getting test limits for test set {0}", testSet.name));
 
             //Create a PTS transaction to retrieve the test set limits
             PTStransaction pts = new PTStransaction();
@@ -312,7 +316,7 @@ namespace CURL500Test
                 //Create a new TestSetLimit object to put the limits in. Adding the testset to the constructor will link the testset with the limits
                 testSet.limits = new TestSetLimits(testSet, limits);
                 //Display test limits maybe somewhere hidden for technician
-                WriteToLog(new List<string> {
+                writeToLog(new List<string> {
                 "<------- Test Limits ------->",
                 "Pass Limit: " + testSet.limits.Pass.ToString(),
                 "Fail Limit: " + testSet.limits.Fail.ToString(),
@@ -323,15 +327,15 @@ namespace CURL500Test
             }
             catch (Exception ex)
             {
-                WriteToLog(ex.Message);
+                writeToLog(ex.Message);
             }
         }
 
-        private async Task<string> GetTestListAsync()
+        private async Task<string> getTestListAsync()
         {
             string err = "";
             //Update log
-            WriteToLog(string.Format("Getting test list for {0}", fiber.fiberId));
+            writeToLog(string.Format("Getting test list for {0}", fiber.fiberId));
 
             //Create a PTS transaction to retrieve the test list
             PTStransaction pts = new PTStransaction();
@@ -350,7 +354,7 @@ namespace CURL500Test
                 if (fiber.testList.ptsReturn[(int)PTSField.RESPONSE_STATUS] != "0")
                 {
                     err = fiber.testList.ptsReturn[(int)PTSField.ERROR_MESSAGE];
-                    WriteToStatus(string.Format("Error retrieving test list: {0}", err));
+                    writeToStatus(string.Format("Error retrieving test list: {0}", err));
                     submitButton.Enabled = true;
                     return err;
                 }
@@ -358,7 +362,7 @@ namespace CURL500Test
                 //If no error then convert the returned string to TestEntry objects
                 else
                 {
-                    WriteToStatus("Test list received");
+                    writeToStatus("Test list received");
                     fiber.testList.convertReturnToTestEntries();
                 }
                 submitButton.Enabled = true;
@@ -366,7 +370,7 @@ namespace CURL500Test
             }
             catch (Exception ex)
             {
-                WriteToLog("Exception getting testlist: " + ex.Message);
+                writeToLog("Exception getting testlist: " + ex.Message);
             }
             return err;
         }
@@ -414,7 +418,7 @@ namespace CURL500Test
 
         private void Main_Load(object sender, EventArgs e)
         {
-            InitializeTestSet();
+            initializeTestSet();
             LogManager.ReconfigExistingLoggers();
         }
 
@@ -468,11 +472,11 @@ namespace CURL500Test
         private void COMToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             testSet.portNumber = e.ClickedItem.Text;
-            testSet.ManagePorts();
-            UpdateCOMMenuItems(e.ClickedItem);
+            testSet.managePorts();
+            updateCOMMenuItems(e.ClickedItem);
         }
 
-        private void UpdateCOMMenuItems(ToolStripItem clickedItem)
+        private void updateCOMMenuItems(ToolStripItem clickedItem)
         {
             // Set the current clicked item to item
             ToolStripMenuItem item = clickedItem as ToolStripMenuItem;
@@ -487,7 +491,7 @@ namespace CURL500Test
             }
         }
 
-        private void UpdateCOMMenuItems(string clickedItem)
+        private void updateCOMMenuItems(string clickedItem)
         {
             // Set the current clicked item to item
             ToolStripMenuItem ownerItem = (ToolStripMenuItem)COMToolStripMenuItem;

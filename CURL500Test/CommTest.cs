@@ -43,11 +43,11 @@ namespace CURL500Test
             port = new SyncSerialPort(portName, baudRate, parity, dataBits, stopBits);
             if (port.Open())
             {
-                WriteToLog(string.Format("Port: {0} open\n", portName));
+                writeToLog(string.Format("Port: {0} open\n", portName));
             }
             else
             {
-                WriteToLog(string.Format("Port failed to open with ex: {0}" + System.Environment.NewLine));
+                writeToLog(string.Format("Port failed to open with ex: {0}" + System.Environment.NewLine));
                 return;
             }
 
@@ -62,17 +62,17 @@ namespace CURL500Test
             {
                 if (port.Open())
                 {
-                    WriteToLog(string.Format("Port: {0} open\n", portName));
+                    writeToLog(string.Format("Port: {0} open\n", portName));
                 }
                 else
                 {
 
-                    WriteToLog(string.Format("Failed to open port {0} ", portName));
+                    writeToLog(string.Format("Failed to open port {0} ", portName));
                 }
             }
             catch (Exception ex)
             {
-                WriteToLog(string.Format("Port failed to open with ex: {0}" + System.Environment.NewLine, ex.Message));
+                writeToLog(string.Format("Port failed to open with ex: {0}" + System.Environment.NewLine, ex.Message));
             }
         }
 
@@ -81,22 +81,22 @@ namespace CURL500Test
             InitializeComponent();
             this.tSet = tSet;
             tSet.portNumber = newPort;
-            tSet.ManagePorts();
+            tSet.managePorts();
             
             try
             {
                 if (tSet.port.isOpen())
                 {
-                    WriteToLog(string.Format("Port: {0} open\n", tSet.portNumber));
+                    writeToLog(string.Format("Port: {0} open\n", tSet.portNumber));
                 }
                 else
                 {
-                    WriteToLog(string.Format("Failed to open port {0} ", tSet.portNumber));
+                    writeToLog(string.Format("Failed to open port {0} ", tSet.portNumber));
                 }
             }
             catch (Exception ex)
             {
-                WriteToLog(string.Format("Port failed to open with ex: {0}" + System.Environment.NewLine, ex.Message));
+                writeToLog(string.Format("Port failed to open with ex: {0}" + System.Environment.NewLine, ex.Message));
             }
         }
 
@@ -104,66 +104,66 @@ namespace CURL500Test
         {
             try
             {
-                //WriteToLog(port.ReadExisting());
+                //writeToLog(port.ReadExisting());
             }
             catch (Exception ex)
             {
-                WriteToLog(ex.Message + System.Environment.NewLine);
+                writeToLog(ex.Message + System.Environment.NewLine);
             }
         }
 
         private async void sendBtn_Click(object sender, EventArgs e)
         {
-            WriteToLog("Sending command " + command.Text);
+            writeToLog("Sending command " + command.Text);
             response = await tSet.port.sendCommand(command.Text);
-            WriteToLog("Response: " + response);
+            writeToLog("Response: " + response);
         }
 
         private async void readBtn_Click(object sender, EventArgs e)
         {
-            WriteToLog("Reading data on port...");
+            writeToLog("Reading data on port...");
             response = await tSet.port.ReadPort();
-            WriteToLog("Response: " + response);
+            writeToLog("Response: " + response);
         }
 
         private async void measureBtn_Click(object sender, EventArgs e)
         {
-            WriteToLog("Sending command MEASURE");
+            writeToLog("Sending command MEASURE");
             response = await tSet.port.Measure();
-            WriteToLog("Response" + response);
+            writeToLog("Response" + response);
         }
 
         private async void statusBtn_Click(object sender, EventArgs e)
         {
-            WriteToLog("Sending command STATUS");
+            writeToLog("Sending command STATUS");
             response = await tSet.port.CheckStatus();
-            WriteToLog("Response" + response);
+            writeToLog("Response" + response);
         }
 
         private async void readResultBtn_Click(object sender, EventArgs e)
         {
-            WriteToLog("Sending command READ RESULTS");
+            writeToLog("Sending command READ RESULTS");
             response = await tSet.port.ReadResult();
-            WriteToLog("Response: " + response);
+            writeToLog("Response: " + response);
         }
 
         private void openPortBtn_Click(object sender, EventArgs e)
         {
-            WriteToLog("Trying to open port");
+            writeToLog("Trying to open port");
             response = tSet.port.open() ? "Port Open" : "Port failed to open";
-            WriteToLog("Response: " + response);
+            writeToLog("Response: " + response);
         }
 
-        public void WriteToLog(string str)
+        public void writeToLog(string str)
         {
             tb.AppendText(str + Environment.NewLine);
         }
 
         private async void readErrorBtn_Click(object sender, EventArgs e)
         {
-            WriteToLog("Sending command READ CURL_ERRORS");
+            writeToLog("Sending command READ CURL_ERRORS");
             response = await tSet.port.CheckForTestErrors();
-            WriteToLog("Response: " + response);
+            writeToLog("Response: " + response);
         }
     }
 

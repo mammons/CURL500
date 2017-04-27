@@ -42,7 +42,7 @@ namespace CURL500Test
             else
             {
                 error = "Failed to find settings file. Please setup test set.";
-                SetUpSettingsFile();
+                setupSettingsFile();
                 Settings settings = new Settings();
                 getArgs(out error);
                 return;
@@ -51,7 +51,7 @@ namespace CURL500Test
             setServer();
         }
 
-        private void SetUpSettingsFile()
+        private void setupSettingsFile()
         {
             try
             {
@@ -67,19 +67,6 @@ namespace CURL500Test
             IniFileHelper.WriteValue("TestSet", "Number", "", path);
             IniFileHelper.WriteValue("TestSet", "Port", "", path);
             IniFileHelper.WriteValue("TestSet", "Server", "", path);
-        }
-
-        private NameValueCollection GetQueryStringParameters()
-        {
-            NameValueCollection nameValueTable = new NameValueCollection();
-
-            if (ApplicationDeployment.IsNetworkDeployed)
-            {
-                string queryString = ApplicationDeployment.CurrentDeployment.ActivationUri.Query;
-                nameValueTable = HttpUtility.ParseQueryString(queryString);
-            }
-
-            return (nameValueTable);
         }
 
         private void setServer()
@@ -103,37 +90,4 @@ namespace CURL500Test
             LogManager.Configuration.Variables["setNum"] = testSetNumber;
         }
     }
-
-    //if (!ApplicationDeployment.IsNetworkDeployed)
-    //{
-    //    var arguments = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;
-    //    if (arguments != null && arguments.Length > 0)
-    //    {
-    //        args = arguments[0].Split(new char[] { ',' });
-    //    }
-    //}
-    //else
-    //{
-    //    args = Environment.GetCommandLineArgs();
-    //}
-
-    //if (args == null || args.Length < 2)
-    //{
-    //    error = ("Not enough arguments.");
-    //}
-    //else
-    //{
-    //TODO get this working with clickonce commandline arguments
-    //    this.server = "DEV";// args[1].Trim();
-    //this.workstation = "1S";// args[2].Trim();
-    //this.testSetName = "LTCURL";// args[3].Trim();
-    //this.testSetNumber = "01";// args[4].Trim();
-    //this.serialPortNumber = '3';// Convert.ToInt16(args[5].Trim());
-
-
-    //}
-
-    //setServer();
-
-    //NameValueCollection queryArgs = GetQueryStringParameters();
 }
