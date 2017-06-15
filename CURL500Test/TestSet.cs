@@ -63,7 +63,7 @@ namespace CURL500Test
         }
 
         /// <summary>
-        /// This manages COM ports. It should create a PECommunication instance if there isn't one or try to close the existing one and open a one when changing between them
+        /// This manages COM ports. It should create a PECommunication instance if there isn't one or try to close the existing one and open a new one when changing between them
         /// </summary>
         /// <returns>Whether the port was successfully opened or not</returns>
         public bool managePorts()

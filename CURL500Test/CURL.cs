@@ -15,7 +15,7 @@ namespace CURL500Test
     {
         public Fiber fiber { get; set; }
         public TestSet testSet { get; set; }
-        
+
         FileSystemWatcher watcher;
 
 
@@ -70,7 +70,7 @@ namespace CURL500Test
                 closeBtn.Visible = true;
                 closeBtn.Focus();
             }
-                       
+
         }
 
         private void displayResults()
@@ -130,7 +130,7 @@ namespace CURL500Test
 
         private async Task RunTest()
         {
-            if(await SendFiberData(fiber.fiberId))
+            if (await SendFiberData(fiber.fiberId))
             {
                 writeToLog("Fiber ID sent to test set");
             }
@@ -140,7 +140,7 @@ namespace CURL500Test
                 setupTest();
                 return;
             }
-            
+
             if (EvaluateResultData())
             {
                 await sendCurlResultToPTS();
@@ -184,11 +184,11 @@ namespace CURL500Test
                 writeToStatus("Results Sent!");
                 ProcessPTSReturn(newPTSReturn.ToList());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 logger.Error(testSet.sessionInfo, "Exception sending curl results to PTS: " + ex);
             }
-            return;   
+            return;
         }
 
 
@@ -196,28 +196,28 @@ namespace CURL500Test
         {
             double resultValue = fiber.results.curlResults.ISEvalue;
             //check curl result against limits
-                    if (resultValue > -1)
-                    {
-                        if (resultValue < testSet.limits.Fail ||
-                            resultValue > testSet.limits.Pass
-                            )
-                        {
-                            fiber.results.curlResults.ISEresult = "F";
-                            fiber.results.curlResults.ISEtestcode = fiber.results.curlResults.ISEtestcode == "RM" ? "FF" : "RM";
-                        }
-                        else
-                        {
-                            fiber.results.curlResults.ISEresult = "P";
-                            fiber.results.curlResults.ISEtestcode = "PP";
-                        }
-                        fiber.results.lastTestResult = fiber.results.curlResults.ISEresult;
-                        return true;
-                    }
-                    else
-                    {
-                        writeToLog("-> There was a problem with the result value. Please try the test again");
-                        return false;
-                    }
+            if (resultValue > -1)
+            {
+                if (resultValue < testSet.limits.Fail ||
+                    resultValue > testSet.limits.Pass
+                    )
+                {
+                    fiber.results.curlResults.ISEresult = "F";
+                    fiber.results.curlResults.ISEtestcode = fiber.results.curlResults.ISEtestcode == "RM" ? "FF" : "RM";
+                }
+                else
+                {
+                    fiber.results.curlResults.ISEresult = "P";
+                    fiber.results.curlResults.ISEtestcode = "PP";
+                }
+                fiber.results.lastTestResult = fiber.results.curlResults.ISEresult;
+                return true;
+            }
+            else
+            {
+                writeToLog("-> There was a problem with the result value. Please try the test again");
+                return false;
+            }
         }
 
         public async Task<bool> GetResultData()
@@ -232,21 +232,24 @@ namespace CURL500Test
                 //ReadPort will wait for data to be available on the port and put it in the setResponse var
                 setResponse = await testSet.port.ReadPort();
                 logger.Debug("setResponse: {0}", setResponse);
+
                 int setStatus = -1;
 
                 //Once we get the FINISHED message from the test set we can check the status
                 //Statuses:0, 1, 2, 12 are valid. 0 is a failed test, 1 is currently measuring which we shouldn't get, 2 is complete with data in memory, 12 is operator canceled test
-                if(setResponse.Contains("FINISHED")) int.TryParse(ProcessPEReturn(await testSet.port.CheckStatus()), out setStatus);
+
+                int.TryParse(ProcessPEReturn(await testSet.port.CheckStatus()), out setStatus);
+
                 logger.Debug("Final setStatus: {0}", setStatus);
                 if (setStatus == 2) //From PE set means Measurement finished. Results in memory.
                 {
-                   return await ProcessResultData();
+                    return await ProcessResultData();
                 }
                 else
                 {
                     DisplayErrorMessage(setStatus);
                     return false;
-                }                
+                }
             }
             else
             {
@@ -299,7 +302,7 @@ namespace CURL500Test
 
         private string ProcessPEReturn(string inVal)
         {
-            string outVal = inVal.Substring(0, inVal.Length-1);
+            string outVal = inVal.Substring(0, inVal.Length - 1);
 
             if (outVal.Contains("FAIL"))
             {
@@ -379,15 +382,15 @@ namespace CURL500Test
 
         private void OnPTSMessageReceived(object source, EventArgs args)
         {
-            if(!loadingCircle.IsDisposed)
-            loadingCircle.LoadingCircleControl.Active = false;
+            if (!loadingCircle.IsDisposed)
+                loadingCircle.LoadingCircleControl.Active = false;
         }
 
         private void OnSerialMessageReceived(object source, PECommunicationEventArgs args)
         {
 
-                logger.Debug("Serial message received: " + args.response);
-                loadingCircle.LoadingCircleControl.Active = false;
+            logger.Debug("Serial message received: " + args.response);
+            loadingCircle.LoadingCircleControl.Active = false;
         }
 
         private void OnSerialMessageSending(object source, EventArgs args)
